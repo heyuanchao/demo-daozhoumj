@@ -26,18 +26,25 @@ package org.cocos2dx.javascript;
 import org.cocos2dx.lib.Cocos2dxActivity;
 import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import org.cocos2dx.javascript.SDKWrapper;
+import org.cocos2dx.lib.Cocos2dxJavascriptJavaBridge;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 
+import com.youxibi.mj.R;
+
 public class AppActivity extends Cocos2dxActivity {
+    public static AppActivity app = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        app = this;
         SDKWrapper.getInstance().init(this);
 
     }
@@ -123,5 +130,32 @@ public class AppActivity extends Cocos2dxActivity {
     protected void onStart() {
         SDKWrapper.getInstance().onStart();
         super.onStart();
+    }
+
+    public static void showExitDialog() {
+        app.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog alertDialog = new AlertDialog.Builder(app)
+                        .setPositiveButton(R.string.exit, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                app.runOnGLThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Cocos2dxJavascriptJavaBridge.evalString("cc.find('Bgm').getComponent('bgm').stopAll();");
+                                    }
+                                });
+
+                                app.finish();
+                                System.exit(0);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .create();
+                alertDialog.setTitle("提示");
+                alertDialog.setMessage("确定要退出游戏？");
+                alertDialog.show();
+            }
+        });
     }
 }

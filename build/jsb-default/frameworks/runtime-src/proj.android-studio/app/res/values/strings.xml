@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">demo_mj</string>
+    <string name="app_name" translatable="false">麻将Demo</string>
+    <string name="exit">退出</string>
 </resources>
