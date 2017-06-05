@@ -1,0 +1,24 @@
+{
+  "appKey": "",
+  "appSecret": "",
+  "excludeScenes": [],
+  "includeAnySDK": false,
+  "includeSdk": [
+    "anysdk"
+  ],
+  "inlineSpriteFrames": true,
+  "mergeStartScene": false,
+  "oauthLoginServer": "",
+  "orientation": {
+    "landscapeLeft": true,
+    "landscapeRight": true,
+    "portrait": false,
+    "upsideDown": false
+  },
+  "packageName": "com.youxibi.mj",
+  "privateKey": "",
+  "renderMode": "0",
+  "startScene": "ac293287-b2f2-4587-87c6-5659a816287c",
+  "title": "demo_mj",
+  "webOrientation": "auto"
+}
