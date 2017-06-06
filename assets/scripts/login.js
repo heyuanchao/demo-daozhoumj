@@ -34,9 +34,9 @@ cc.Class({
                     jsb.reflection.callStaticMethod(className, methodName, methodSignature)
                 }
             } else if (cc.sys.isBrowser) {
-                // userinfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"我是谁\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/Po9mkm3Z42tolYpxUVpY6mvCmqalibOpcJ2jG3Qza5qgtibO1NLFNUF7icwCibxPicbGmkoiciaqKEIdvvveIBfEQqal8vkiavHIeqFT\/0\",\"privilege\":[],\"unionid\":\"o8c-nt6tO8aIBNPoxvXOQTVJUxY0\"}");
+                // userInfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"我是谁\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/Po9mkm3Z42tolYpxUVpY6mvCmqalibOpcJ2jG3Qza5qgtibO1NLFNUF7icwCibxPicbGmkoiciaqKEIdvvveIBfEQqal8vkiavHIeqFT\/0\",\"privilege\":[],\"unionid\":\"o8c-nt6tO8aIBNPoxvXOQTVJUxY0\"}");
                 userInfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"在努力的龙小博\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/WT9MJf6I7WAkic7ficWBuYbvkMscic97pBa0BbicwKCmOvicsPr1GozNMWnp4gfwMib0A5zdDyUOjaFFSdrz0viao3oKpsXqAeF9ZJ1\/0\",\"privilege\":[],\"unionid\":\"o8c-nt2jC5loIHg1BQGgYW6aqe60\"}");
-                // userinfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"honey\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/Po9mkm3Z42vkKC5g0b6kzjwUiaCice6Znv9wpCpOIpUjM4fTicPrldibAww7YtTZMlW3teKndBe9GcqBHcStictz3KPayVWnwGicKF\/0\",\"privilege\":[],\"unionid\":\"o8c-ntxW4cW601v6RjaAsExy98w4\"}");
+                // userInfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"honey\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/Po9mkm3Z42vkKC5g0b6kzjwUiaCice6Znv9wpCpOIpUjM4fTicPrldibAww7YtTZMlW3teKndBe9GcqBHcStictz3KPayVWnwGicKF\/0\",\"privilege\":[],\"unionid\":\"o8c-ntxW4cW601v6RjaAsExy98w4\"}");
                 // this.requestWechatLogin()
             }
         })));
@@ -53,8 +53,8 @@ cc.Class({
     getWeChatLoginResult(result) {
         let r = result.split(",")
 
-        userInfo.serial = results[2]
-        userInfo.model = results[3]
+        userInfo.serial = r[2]
+        userInfo.model = r[3]
         // cc.log(results[4] + ", " + results[5])
         this.getAccessToken(r[0], r[1])
     },
@@ -75,7 +75,7 @@ cc.Class({
                 self.getUserInfo(token.access_token, token.openid);
             }
         };
-        xhr.open("GET", "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appid + "&secret=" + appsecrct + "&code=" + code + "&grant_type=authorization_code", true);
+        xhr.open("GET", "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appid + "&secret=" + appsecret + "&code=" + code + "&grant_type=authorization_code", true);
         xhr.send();
     },
 
@@ -88,15 +88,15 @@ cc.Class({
                     cc.log(xhr.responseText);
                 }
                 let info = JSON.parse(xhr.responseText)
-                // userinfo.openid = info.openid
-                userinfo.nickname = info.nickname
-                userinfo.sex = info.sex
-                // userinfo.language = info.language
-                // userinfo.city = info.city
-                // userinfo.province = info.province
-                // userinfo.country = info.country
-                userinfo.headimgurl = info.headimgurl
-                userinfo.unionid = info.unionid
+                // userInfo.openid = info.openid
+                userInfo.nickname = info.nickname
+                userInfo.sex = info.sex
+                // userInfo.language = info.language
+                // userInfo.city = info.city
+                // userInfo.province = info.province
+                // userInfo.country = info.country
+                userInfo.headimgurl = info.headimgurl
+                userInfo.unionid = info.unionid
                 // self.requestWechatLogin()
             }
         };
