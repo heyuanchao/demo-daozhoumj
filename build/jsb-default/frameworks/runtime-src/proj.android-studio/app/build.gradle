@@ -7,7 +7,7 @@ android {
     buildToolsVersion "25.0.0"
 
     defaultConfig {
-        applicationId "org.cocos2d.helloworld"
+        applicationId "com.youxibi.mj"
         minSdkVersion 10
         targetSdkVersion PROP_TARGET_SDK_VERSION
         versionCode 1
@@ -84,6 +84,12 @@ android {
         }
 
         debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (project.hasProperty("RELEASE_STORE_FILE")) {
+                signingConfig signingConfigs.release
+            }
+
             externalNativeBuild {
                 ndkBuild {
                     arguments 'NDK_DEBUG=1'
@@ -135,4 +141,5 @@ tasks.withType(JavaCompile) {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':libcocos2dx')
+    compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:1.0.2'
 }

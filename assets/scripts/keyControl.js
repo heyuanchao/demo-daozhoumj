@@ -16,6 +16,7 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
+        // 设置为常驻节点
         cc.game.addPersistRootNode(this.node)
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this)
     },
@@ -29,7 +30,7 @@ cc.Class({
             case cc.KEY.b:
                 // cc.find('Bgm').getComponent('bgm').resume();
                 break;
-            case cc.KEY.back:// 6, 返回键
+            case cc.KEY.back: // 6, 返回键
                 this.showExitDialog();
                 break;
         }

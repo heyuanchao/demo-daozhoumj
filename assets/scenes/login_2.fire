@@ -396,8 +396,8 @@
       "__id__": 2
     },
     "component": "login",
-    "handler": "weChatLogin",
-    "customEventData": "hall_3"
+    "handler": "wechatLogin",
+    "customEventData": ""
   },
   {
     "__type__": "cc.Sprite",

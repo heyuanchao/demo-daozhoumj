@@ -16,7 +16,9 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
-
+        this.node.runAction(cc.sequence(cc.delayTime(2), cc.callFunc(function () {
+            cc.director.loadScene("login_2")
+        })));
     },
 
     loadScene: function(event, sceneName) {

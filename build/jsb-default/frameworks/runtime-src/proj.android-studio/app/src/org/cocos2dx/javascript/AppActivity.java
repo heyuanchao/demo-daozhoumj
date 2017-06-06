@@ -36,10 +36,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 
+import com.tencent.mm.opensdk.modelmsg.SendAuth;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.youxibi.mj.R;
 
 public class AppActivity extends Cocos2dxActivity {
     public static AppActivity app = null;
+
+    // APP_ID 替换为你的应用从官方网站申请到的合法appId
+    public static final String APP_ID = "wx2ab2ad4bcd0cf6a9";
+
+    private static IWXAPI api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +55,11 @@ public class AppActivity extends Cocos2dxActivity {
         app = this;
         SDKWrapper.getInstance().init(this);
 
+        // 通过WXAPIFactory工厂，获取IWXAPI的实例
+        api = WXAPIFactory.createWXAPI(this, APP_ID, false);
+
+        // 将该app注册到微信
+        api.registerApp(APP_ID);
     }
 	
     @Override
@@ -130,6 +143,13 @@ public class AppActivity extends Cocos2dxActivity {
     protected void onStart() {
         SDKWrapper.getInstance().onStart();
         super.onStart();
+    }
+
+    public static void wechatLogin() {
+        final SendAuth.Req req = new SendAuth.Req();
+        req.scope = "snsapi_userinfo";
+        req.state = "wechat_login";
+        api.sendReq(req);
     }
 
     public static void showExitDialog() {
