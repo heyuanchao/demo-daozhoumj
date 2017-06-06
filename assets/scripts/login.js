@@ -8,38 +8,48 @@ cc.Class({
     // use this for initialization
     onLoad: function () {
         this.effectOn = true
+        this.btnWeChatLogin = cc.find("Canvas/bg/btn_wechat_login").getComponent(cc.Button)
+    },
+
+    // Java 调用
+    setWeChatLoginEnabled() {
+        this.btnWeChatLogin.enabled = true
     },
 
     wechatLogin: function () {
-        // this.node.runAction(cc.sequence(cc.delayTime(0.3), cc.callFunc(function () {
-        //     cc.director.loadScene("hall_3")
-        // })));
+        this.playEffect("SpecOk.mp3")
+        
+        let self = this
+        this.node.runAction(cc.sequence(cc.delayTime(0.3), cc.callFunc(function () {
+            self.node.stopAllActions()
+            self.btnWeChatLogin.enabled = false
 
-        if (cc.sys.isMobile) {
-            // cc.find('Bgm').getComponent('bgm').pause();
-            
-            if (cc.sys.os == cc.sys.OS_ANDROID) {
-                var className = "org/cocos2dx/javascript/AppActivity"
-                var methodName = "wechatLogin"
-                var methodSignature = "()V"
-                jsb.reflection.callStaticMethod(className, methodName, methodSignature)
+            if (cc.sys.isMobile) {
+                // cc.find('Bgm').getComponent('bgm').pause();
+
+                if (cc.sys.os == cc.sys.OS_ANDROID) {
+                    var className = "org/cocos2dx/javascript/AppActivity"
+                    var methodName = "wechatLogin"
+                    var methodSignature = "()V"
+                    jsb.reflection.callStaticMethod(className, methodName, methodSignature)
+                }
+            } else if (cc.sys.isBrowser) {
+                // userinfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"我是谁\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/Po9mkm3Z42tolYpxUVpY6mvCmqalibOpcJ2jG3Qza5qgtibO1NLFNUF7icwCibxPicbGmkoiciaqKEIdvvveIBfEQqal8vkiavHIeqFT\/0\",\"privilege\":[],\"unionid\":\"o8c-nt6tO8aIBNPoxvXOQTVJUxY0\"}");
+                userInfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"在努力的龙小博\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/WT9MJf6I7WAkic7ficWBuYbvkMscic97pBa0BbicwKCmOvicsPr1GozNMWnp4gfwMib0A5zdDyUOjaFFSdrz0viao3oKpsXqAeF9ZJ1\/0\",\"privilege\":[],\"unionid\":\"o8c-nt2jC5loIHg1BQGgYW6aqe60\"}");
+                // userinfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"honey\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/Po9mkm3Z42vkKC5g0b6kzjwUiaCice6Znv9wpCpOIpUjM4fTicPrldibAww7YtTZMlW3teKndBe9GcqBHcStictz3KPayVWnwGicKF\/0\",\"privilege\":[],\"unionid\":\"o8c-ntxW4cW601v6RjaAsExy98w4\"}");
+                // this.requestWechatLogin()
             }
-        } else if (cc.sys.isBrowser) {
-            // userinfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"我是谁\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/Po9mkm3Z42tolYpxUVpY6mvCmqalibOpcJ2jG3Qza5qgtibO1NLFNUF7icwCibxPicbGmkoiciaqKEIdvvveIBfEQqal8vkiavHIeqFT\/0\",\"privilege\":[],\"unionid\":\"o8c-nt6tO8aIBNPoxvXOQTVJUxY0\"}");
-            userinfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"在努力的龙小博\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/WT9MJf6I7WAkic7ficWBuYbvkMscic97pBa0BbicwKCmOvicsPr1GozNMWnp4gfwMib0A5zdDyUOjaFFSdrz0viao3oKpsXqAeF9ZJ1\/0\",\"privilege\":[],\"unionid\":\"o8c-nt2jC5loIHg1BQGgYW6aqe60\"}");
-            // userinfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"honey\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/Po9mkm3Z42vkKC5g0b6kzjwUiaCice6Znv9wpCpOIpUjM4fTicPrldibAww7YtTZMlW3teKndBe9GcqBHcStictz3KPayVWnwGicKF\/0\",\"privilege\":[],\"unionid\":\"o8c-ntxW4cW601v6RjaAsExy98w4\"}");
-            // this.requestWechatLogin()
-        }
+        })));
     },
 
-    playEffect: function (event, audioName) {
-        cc.log(audioName)
+    playEffect: function (audioName) {
         if (this.effectOn) {
             let audio = cc.url.raw("resources/audio/" + audioName)
             cc.audioEngine.play(audio, false, 1)
         }
     },
 
+    // Java 调用
     getWeChatLoginResult(result) {
         let r = result.split(",")
 

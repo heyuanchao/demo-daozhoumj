@@ -162,7 +162,7 @@ public class AppActivity extends Cocos2dxActivity {
                                 app.runOnGLThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Cocos2dxJavascriptJavaBridge.evalString("cc.find('Bgm').getComponent('bgm').stopAll();");
+                                        // Cocos2dxJavascriptJavaBridge.evalString("cc.find('Bgm').getComponent('bgm').stopAll();");
                                     }
                                 });
 

@@ -18,10 +18,10 @@ cc.Class({
     onLoad: function () {
         // 设置为常驻节点
         cc.game.addPersistRootNode(this.node)
-        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this)
+        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this)
     },
 
-    onKeyUp(event) {
+    onKeyDown(event) {
         cc.log('keyCode: ' + event.keyCode);
         switch (event.keyCode) {
             case cc.KEY.a:
