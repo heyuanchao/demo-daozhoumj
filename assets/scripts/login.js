@@ -18,7 +18,7 @@ cc.Class({
 
     wechatLogin: function () {
         this.playEffect("SpecOk.mp3")
-        
+
         let self = this
         this.node.runAction(cc.sequence(cc.delayTime(0.3), cc.callFunc(function () {
             self.node.stopAllActions()
@@ -37,7 +37,7 @@ cc.Class({
                 // userInfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"我是谁\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/Po9mkm3Z42tolYpxUVpY6mvCmqalibOpcJ2jG3Qza5qgtibO1NLFNUF7icwCibxPicbGmkoiciaqKEIdvvveIBfEQqal8vkiavHIeqFT\/0\",\"privilege\":[],\"unionid\":\"o8c-nt6tO8aIBNPoxvXOQTVJUxY0\"}");
                 userInfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"在努力的龙小博\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/WT9MJf6I7WAkic7ficWBuYbvkMscic97pBa0BbicwKCmOvicsPr1GozNMWnp4gfwMib0A5zdDyUOjaFFSdrz0viao3oKpsXqAeF9ZJ1\/0\",\"privilege\":[],\"unionid\":\"o8c-nt2jC5loIHg1BQGgYW6aqe60\"}");
                 // userInfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"honey\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/Po9mkm3Z42vkKC5g0b6kzjwUiaCice6Znv9wpCpOIpUjM4fTicPrldibAww7YtTZMlW3teKndBe9GcqBHcStictz3KPayVWnwGicKF\/0\",\"privilege\":[],\"unionid\":\"o8c-ntxW4cW601v6RjaAsExy98w4\"}");
-                // this.requestWechatLogin()
+                self.requestWeChatLogin()
             }
         })));
     },
@@ -97,11 +97,68 @@ cc.Class({
                 // userInfo.country = info.country
                 userInfo.headimgurl = info.headimgurl
                 userInfo.unionid = info.unionid
-                // self.requestWechatLogin()
+                self.requestWeChatLogin()
             }
         };
         xhr.open("GET", "https://api.weixin.qq.com/sns/userinfo?access_token=" + access_token + "&openid=" + openid, true);
         xhr.send();
+    },
+
+    requestWeChatLogin() {
+        if (ws != null) {
+            return
+        }
+
+        initWebSocket()
+
+        Notification.on("onopen", function () {
+            Notification.offType("onopen")
+            sendWeChatLogin()
+        }, this)
+
+        Notification.on("onmessage", this.onResult, this)
+
+        Notification.on("onerror", function () {
+            Notification.offType("onerror")
+            cc.log("登录失败，请稍后重试")
+        }, this)
+    },
+
+    onResult(result) {
+        cc.log(result)
+        if (result.S2C_Login) {
+            cc.log('another room: ' + userInfo.anotherRoom)
+            if (userInfo.anotherRoom) {
+                sendEnterRoom()
+            } else {
+                Notification.offType("onmessage")
+                cc.director.loadScene("hall_3")
+            }
+        } else if (result.S2C_Close) {
+            if (result.S2C_Close.Error === 1) { // S2C_Close_LoginRepeated
+                //this.launch_dialog.getComponent('launch_dialog').show('您的账号在其他设备上线，非本人操作请注意修改密码')
+            } else if (result.S2C_Close.Error === 2) { // S2C_Close_InnerError
+                this.launch_dialog.getComponent('launch_dialog').show('登录出错，请联系客服')
+            } else if (result.S2C_Close.Error === 3) { // S2C_Close_TokenInvalid
+
+            } else if (result.S2C_Close.Error === 4) { // S2C_Close_UnionidInvalid
+                this.launch_dialog.getComponent('launch_dialog').show('登录出错，Unionid无效')
+            } else if (result.S2C_Close.Error === 5) { // S2C_Close_UsernameInvalid
+
+            }
+        } else if (result.S2C_EnterRoom) {
+            if (result.S2C_EnterRoom.Error === 0) { // S2C_EnterRoom_OK
+                // 加载房间
+            } else if (result.S2C_EnterRoom.Error === 1) { // S2C_EnterRoom_NotCreated
+                this.launch_dialog.getComponent('launch_dialog').show('房间: ' + result.S2C_EnterRoom.RoomNumber + ' 未创建', 1)
+                // 加载大厅
+            } else if (result.S2C_EnterRoom.Error === 2) { // S2C_EnterRoom_NotAllowBystander
+                this.launch_dialog.getComponent('launch_dialog').show('房间: ' + result.S2C_EnterRoom.RoomNumber + ' 不允许旁观', 1)
+                // 加载大厅
+            } else if (result.S2C_EnterRoom.Error === 3) { // S2C_EnterRoom_InOtherRoom
+                this.launch_dialog.getComponent('launch_dialog').show('亲，你正在其他房间对局，是否回去？', 1)
+            }
+        }
     },
 
     // called every frame, uncomment this function to activate update callback
