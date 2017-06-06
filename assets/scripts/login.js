@@ -9,6 +9,25 @@ cc.Class({
     onLoad: function () {
         this.effectOn = true
         this.btnWeChatLogin = cc.find("Canvas/bg/btn_wechat_login").getComponent(cc.Button)
+
+        Notification.on("onopen", function () {
+            sendWeChatLogin()
+        }, this)
+
+        Notification.on("onmessage", this.onResult, this)
+
+        let self = this
+        Notification.on("onerror", function () {
+            cc.log("登录失败，请稍后重试")
+
+            self.btnWeChatLogin.enabled = true
+        }, this)
+    },
+
+    onDestroy: function() {
+        Notification.offType("onopen")
+        Notification.offType("onmessage")
+        Notification.offType("onerror")        
     },
 
     // Java 调用
@@ -105,23 +124,9 @@ cc.Class({
     },
 
     requestWeChatLogin() {
-        if (ws != null) {
-            return
+        if (ws == null) {
+            initWebSocket()
         }
-
-        initWebSocket()
-
-        Notification.on("onopen", function () {
-            Notification.offType("onopen")
-            sendWeChatLogin()
-        }, this)
-
-        Notification.on("onmessage", this.onResult, this)
-
-        Notification.on("onerror", function () {
-            Notification.offType("onerror")
-            cc.log("登录失败，请稍后重试")
-        }, this)
     },
 
     onResult(result) {
@@ -131,7 +136,6 @@ cc.Class({
             if (userInfo.anotherRoom) {
                 sendEnterRoom()
             } else {
-                Notification.offType("onmessage")
                 cc.director.loadScene("hall_3")
             }
         } else if (result.S2C_Close) {

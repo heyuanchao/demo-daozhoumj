@@ -7,12 +7,29 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
+        Notification.on("onopen", function () {
+            sendTokenLogin()
+        }, this)
+
         Notification.on("onmessage", this.onResult, this)
+    },
+
+    start: function () {
+        if (userInfo.anotherLogin) {
+            userInfo.anotherLogin = false
+            cc.log("您的账号刚在其他设备上线，请您检查账号安全")
+        }
+    },
+
+    onDestroy: function () {
+        Notification.offType("onopen")
+        Notification.offType("onmessage")
+        Notification.offType("onerror")
     },
 
     onResult(result) {
         if (result.S2C_Login) {
-            cc.log('another room: ' + userinfo.anotherRoom)
+            cc.log('another room: ' + userInfo.anotherRoom)
             if (userinfo.anotherRoom) {
                 sendEnterRoom()
             } else {
@@ -21,6 +38,8 @@ cc.Class({
         } else if (result.S2C_Close) {
             if (result.S2C_Close.Error === 1) { // S2C_Close_LoginRepeated
                 cc.log("您的账号在其他设备上线，非本人操作请注意修改密码")
+                Notification.offType("onmessage")
+                cc.director.loadScene("login_2")
             } else if (result.S2C_Close.Error === 2) { // S2C_Close_InnerError
                 this.lobby_dialog.getComponent('lobby_dialog').show('登录态失效，请您重新登录!', 1)
             } else if (result.S2C_Close.Error === 3) { // S2C_Close_TokenInvalid
