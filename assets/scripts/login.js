@@ -10,6 +10,10 @@ cc.Class({
         this.effectOn = true
         this.btnWeChatLogin = cc.find("Canvas/bg/btn_wechat_login").getComponent(cc.Button)
 
+        this.dotCount = 0
+        this.loading = cc.find("Canvas/loading")
+        this.loading_txt = this.loading.getChildByName("loading_txt").getComponent(cc.Label)
+
         Notification.on("onopen", function () {
             sendWeChatLogin()
         }, this)
@@ -18,16 +22,40 @@ cc.Class({
 
         let self = this
         Notification.on("onerror", function () {
+            self.stopLoading()
             cc.log("登录失败，请稍后重试")
 
             self.btnWeChatLogin.enabled = true
         }, this)
     },
 
-    onDestroy: function() {
+    onDestroy: function () {
         Notification.offType("onopen")
         Notification.offType("onmessage")
-        Notification.offType("onerror")        
+        Notification.offType("onerror")
+    },
+
+    startLoading() {
+        if (this.loading.active) return
+
+        this.loading.active = true
+        this.schedule(this.updateLoadingLabel, 0.3, this)
+    },
+
+    stopLoading() {
+        if (this.loading.active) {
+            this.loading.active = false
+            this.unschedule(this.updateLoadingLabel)
+        }
+    },
+
+    updateLoadingLabel() {
+        this.loading_txt.string += '.'
+        this.dotCount += 1;
+        if (this.dotCount > 3) {
+            this.dotCount = 0
+            this.loading_txt.string = trim(this.loading_txt.string, '.')
+        }
     },
 
     // Java 调用
@@ -124,12 +152,15 @@ cc.Class({
     },
 
     requestWeChatLogin() {
+        this.startLoading()
+
         if (ws == null) {
             initWebSocket()
         }
     },
 
     onResult(result) {
+        this.stopLoading()
         cc.log(result)
         if (result.S2C_Login) {
             cc.log('another room: ' + userInfo.anotherRoom)

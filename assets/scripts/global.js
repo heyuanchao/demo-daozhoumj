@@ -114,3 +114,15 @@ window.Notification = {
         this._eventMap[type] = undefined;
     },
 }
+
+window.trim = function (str, s) {
+    if (s === null || s === '') {
+        s = ' '
+    }
+
+    while (str.indexOf(s) != -1) {
+        str = str.replace(s, '')
+    }
+
+    return str
+}
