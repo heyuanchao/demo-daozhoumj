@@ -154,9 +154,11 @@ cc.Class({
     requestWeChatLogin() {
         this.startLoading()
 
-        if (ws == null) {
-            initWebSocket()
-        }
+        this.node.runAction(cc.sequence(cc.delayTime(1), cc.callFunc(function () {
+            if (ws == null) {
+                initWebSocket()
+            }
+        })))
     },
 
     onResult(result) {
