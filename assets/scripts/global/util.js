@@ -45,13 +45,21 @@ window.Notification = {
 }
 
 window.trim = function (str, s) {
-    if (s === null || s === '') {
-        s = ' '
+    if (s === null || s === "") {
+        s = " "
     }
 
     while (str.indexOf(s) != -1) {
-        str = str.replace(s, '')
+        str = str.replace(s, "")
     }
 
     return str
+}
+
+window.playEffect = function (audioName) {
+    let effectOn = true
+    if (effectOn) {
+        let audio = cc.url.raw("resources/audio/" + audioName)
+        cc.audioEngine.play(audio, false, 1)
+    }
 }

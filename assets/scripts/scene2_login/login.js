@@ -2,17 +2,19 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-
+        dialogPrefab: cc.Prefab,
     },
 
     // use this for initialization
     onLoad: function () {
-        this.effectOn = true
         this.btnWeChatLogin = cc.find("Canvas/bg/btn_wechat_login").getComponent(cc.Button)
 
         this.dotCount = 0
         this.loading = cc.find("Canvas/loading")
         this.loading_txt = this.loading.getChildByName("loading_txt").getComponent(cc.Label)
+
+        this.dialog = cc.instantiate(this.dialogPrefab)
+        this.node.addChild(this.dialog)
 
         Notification.on("onopen", function () {
             sendWeChatLogin()
@@ -23,16 +25,27 @@ cc.Class({
         let self = this
         Notification.on("onerror", function () {
             self.stopLoading()
-            cc.log("登录失败，请稍后重试")
+            this.dialog.getComponent("dialog").setTitle("   ").setMessage("登录失败，请稍后重试").show()
 
-            self.btnWeChatLogin.enabled = true
+            // self.btnWeChatLogin.enabled = true
         }, this)
+
+        Notification.on("enable", function() {
+            self.btnWeChatLogin.enabled = true
+        })
+
+        Notification.on("disable", function() {
+            self.btnWeChatLogin.enabled = false
+        })
     },
 
     onDestroy: function () {
         Notification.offType("onopen")
         Notification.offType("onmessage")
         Notification.offType("onerror")
+
+        Notification.offType("enable")
+        Notification.offType("disable")
     },
 
     startLoading() {
@@ -64,7 +77,7 @@ cc.Class({
     },
 
     wechatLogin: function () {
-        this.playEffect("SpecOk.mp3")
+        playEffect("SpecOk.mp3")
 
         let self = this
         this.node.runAction(cc.sequence(cc.delayTime(0.3), cc.callFunc(function () {
@@ -87,13 +100,6 @@ cc.Class({
                 self.requestWeChatLogin()
             }
         })));
-    },
-
-    playEffect: function (audioName) {
-        if (this.effectOn) {
-            let audio = cc.url.raw("resources/audio/" + audioName)
-            cc.audioEngine.play(audio, false, 1)
-        }
     },
 
     // Java 调用
@@ -175,7 +181,7 @@ cc.Class({
             if (result.S2C_Close.Error === 1) { // S2C_Close_LoginRepeated
                 //this.launch_dialog.getComponent('launch_dialog').show('您的账号在其他设备上线，非本人操作请注意修改密码')
             } else if (result.S2C_Close.Error === 2) { // S2C_Close_InnerError
-                this.launch_dialog.getComponent('launch_dialog').show('登录出错，请联系客服')
+                this.dialog.getComponent("dialog").setTitle("a").setMessage("登录出错，请联系客服").show()
             } else if (result.S2C_Close.Error === 3) { // S2C_Close_TokenInvalid
 
             } else if (result.S2C_Close.Error === 4) { // S2C_Close_UnionidInvalid
