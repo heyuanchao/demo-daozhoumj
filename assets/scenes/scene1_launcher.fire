@@ -251,7 +251,7 @@
     },
     "component": "launcher",
     "handler": "loadScene",
-    "customEventData": "login_2"
+    "customEventData": "scene2_login"
   },
   {
     "__type__": "cc.Canvas",

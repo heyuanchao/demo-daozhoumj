@@ -38,8 +38,7 @@ cc.Class({
         } else if (result.S2C_Close) {
             if (result.S2C_Close.Error === 1) { // S2C_Close_LoginRepeated
                 cc.log("您的账号在其他设备上线，非本人操作请注意修改密码")
-                Notification.offType("onmessage")
-                cc.director.loadScene("login_2")
+                cc.director.loadScene(login)
             } else if (result.S2C_Close.Error === 2) { // S2C_Close_InnerError
                 this.lobby_dialog.getComponent('lobby_dialog').show('登录态失效，请您重新登录!', 1)
             } else if (result.S2C_Close.Error === 3) { // S2C_Close_TokenInvalid

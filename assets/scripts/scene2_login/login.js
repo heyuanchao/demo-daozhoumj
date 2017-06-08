@@ -169,7 +169,7 @@ cc.Class({
             if (userInfo.anotherRoom) {
                 sendEnterRoom()
             } else {
-                cc.director.loadScene("hall_3")
+                cc.director.loadScene(hall)
             }
         } else if (result.S2C_Close) {
             if (result.S2C_Close.Error === 1) { // S2C_Close_LoginRepeated
