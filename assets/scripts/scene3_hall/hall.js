@@ -2,7 +2,7 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-
+        dialogPrefab: cc.Prefab,
     },
 
     // use this for initialization

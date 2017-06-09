@@ -25,9 +25,7 @@ cc.Class({
         let self = this
         Notification.on("onerror", function () {
             self.stopLoading()
-            this.dialog.getComponent("dialog").setTitle("   ").setMessage("登录失败，请稍后重试").show()
-
-            // self.btnWeChatLogin.enabled = true
+            this.dialog.getComponent("dialog").setMessage("登录失败，请稍后重试").setPositiveButton(null).setNegativeButton(null).show()
         }, this)
 
         Notification.on("enable", function() {
