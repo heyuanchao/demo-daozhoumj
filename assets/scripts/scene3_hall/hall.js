@@ -4,6 +4,7 @@ cc.Class({
     properties: {
         dialogPrefab: cc.Prefab,
         settingPrefab: cc.Prefab,
+        loading2Prefab: cc.Prefab,
         avatar: cc.Sprite,
         nickname: cc.Label,
         accountID: cc.Label,
@@ -20,6 +21,9 @@ cc.Class({
         this.setting = cc.instantiate(this.settingPrefab)
         this.node.addChild(this.setting)
 
+        this.loading2 = cc.instantiate(this.loading2Prefab)
+        this.node.addChild(this.loading2)
+
         this.loadUserInfo()
 
         Notification.on("onopen", function () {
@@ -30,7 +34,14 @@ cc.Class({
 
         let self = this
         Notification.on("onerror", function () {
-            self.dialog.getComponent("dialog").setMessage("登录失败，请稍后重试").setPositiveButton(null).show()
+            this.loading2.getComponent("loading2").hide()
+
+            self.dialog.getComponent("dialog").setMessage("无法连接服务器，是否继续尝试重连?").setPositiveButton(function () {
+                self.reconnect()
+            }).setNegativeButton(function () {
+                loadScene("scene2_login")
+            }).show()
+            // self.dialog.getComponent("dialog").setMessage("登录失败，请稍后重试").setPositiveButton(null).show()
         }, this)
 
         Notification.on("onclose", this.reconnect, this)
@@ -68,11 +79,12 @@ cc.Class({
     },
 
     reconnect: function () {
-        this.dialog.getComponent("dialog").setMessage("无法连接服务器，是否继续尝试重连?").setPositiveButton(function () {
-            
-        }).setNegativeButton(function () {
-            loadScene("scene2_login")
-        }).show()
+        if (this.dialog.node.active) {
+            return
+        }
+
+        this.loading2.getComponent("loading2").show()
+        initWebSocket()
     },
 
     loadUserInfo: function () {
