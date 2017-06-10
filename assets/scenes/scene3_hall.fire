@@ -2662,6 +2662,15 @@
     },
     "accountID": {
       "__id__": 14
+    },
+    "btn_create_room": {
+      "__id__": 35
+    },
+    "btn_setting": {
+      "__id__": 26
+    },
+    "btn_share": {
+      "__id__": 31
     }
   }
 ]

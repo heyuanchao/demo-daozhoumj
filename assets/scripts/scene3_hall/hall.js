@@ -7,16 +7,13 @@ cc.Class({
         avatar: cc.Sprite,
         nickname: cc.Label,
         accountID: cc.Label,
+        btn_create_room: cc.Button,
+        btn_setting: cc.Button,
+        btn_share: cc.Button,
     },
 
     // use this for initialization
     onLoad: function () {
-        Notification.on("onopen", function () {
-            sendTokenLogin()
-        }, this)
-
-        Notification.on("onmessage", this.onResult, this)
-
         this.dialog = cc.instantiate(this.dialogPrefab)
         this.node.addChild(this.dialog)
 
@@ -24,6 +21,27 @@ cc.Class({
         this.node.addChild(this.setting)
 
         this.loadUserInfo()
+
+        Notification.on("onopen", function () {
+            sendTokenLogin()
+        }, this)
+
+        Notification.on("onmessage", this.onResult, this)
+
+        let self = this
+        Notification.on("onerror", function () {
+            self.dialog.getComponent("dialog").setMessage("登录失败，请稍后重试").setPositiveButton(null).show()
+        }, this)
+
+        Notification.on("onclose", this.reconnect, this)
+
+        Notification.on("enable", function() {
+            self.setButtonsEnabled(true)
+        })
+
+        Notification.on("disable", function() {
+            self.setButtonsEnabled(false)
+        })
     },
 
     start: function () {
@@ -37,6 +55,22 @@ cc.Class({
         Notification.offType("onopen")
         Notification.offType("onmessage")
         Notification.offType("onerror")
+        Notification.offType("onclose")
+
+        Notification.offType("enable")
+        Notification.offType("disable")
+    },
+
+    setButtonsEnabled: function(enabled) {
+        this.btn_create_room.enabled = enabled
+        this.btn_setting.enabled = enabled
+        this.btn_share.enabled = enabled
+    },
+
+    reconnect: function () {
+        this.dialog.getComponent("dialog").setMessage("无法连接服务器，是否继续尝试重连?").setPositiveButton(null).setNegativeButton(function () {
+            loadScene("scene2_login")
+        }).show()
     },
 
     loadUserInfo: function () {
