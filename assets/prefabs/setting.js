@@ -16,6 +16,7 @@ cc.Class({
     },
 
     switchAccount: function() {
+        localStorageRemoveItem("token")
         closeWebSocket()
         loadScene("scene2_login")
     },

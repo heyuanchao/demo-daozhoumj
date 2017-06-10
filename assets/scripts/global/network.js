@@ -60,8 +60,8 @@ window.sendWeChatLogin = function () {
 window.sendTokenLogin = function () {
     sendJSONObject({
         C2S_TokenLogin: {
-            username: cc.sys.localStorage.getItem("username"),
-            token: cc.sys.localStorage.getItem("token"),
+            username: localStorageGetItem("username"),
+            token: localStorageGetItem("token"),
         }
     })
 }
@@ -74,6 +74,6 @@ window.setUserInfo = function (obj) {
     userInfo.anotherLogin = obj.AnotherLogin
     userInfo.anotherRoom = obj.AnotherRoom
 
-    cc.sys.localStorage.setItem("token", obj.Token)
-    cc.sys.localStorage.setItem("username", obj.Username)
+    localStorageSetItem("token", obj.Token)
+    localStorageSetItem("username", obj.Username)
 }

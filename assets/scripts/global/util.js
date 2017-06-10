@@ -67,3 +67,15 @@ window.playEffect = function (audioName) {
 window.loadScene = function (sceneName) {
     cc.director.loadScene(sceneName)
 }
+
+window.localStorageSetItem = function(itemName, item) {
+    return cc.sys.localStorage.setItem(itemName, item)
+}
+
+window.localStorageGetItem = function(itemName) {
+    return cc.sys.localStorage.getItem(itemName)
+}
+
+window.localStorageRemoveItem = function(itemName) {
+    cc.sys.localStorage.removeItem(itemName)
+}
