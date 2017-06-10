@@ -16,6 +16,7 @@ cc.Class({
     },
 
     switchAccount: function() {
+        closeWebSocket()
         loadScene("scene2_login")
     },
 

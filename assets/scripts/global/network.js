@@ -36,6 +36,10 @@ window.initWebSocket = function () {
     }
 }
 
+window.closeWebSocket = function () {
+    if (ws) ws.close()
+}
+
 window.sendJSONObject = function (obj) {
     if (ws && ws.readyState == WebSocket.OPEN) ws.send(JSON.stringify(obj))
 }
@@ -53,6 +57,15 @@ window.sendWeChatLogin = function () {
     })
 }
 
+window.sendTokenLogin = function () {
+    sendJSONObject({
+        C2S_TokenLogin: {
+            username: cc.sys.localStorage.getItem("username"),
+            token: cc.sys.localStorage.getItem("token"),
+        }
+    })
+}
+
 window.setUserInfo = function (obj) {
     userInfo.accountID = obj.AccountID
     userInfo.nickname = obj.Nickname
@@ -61,6 +74,6 @@ window.setUserInfo = function (obj) {
     userInfo.anotherLogin = obj.AnotherLogin
     userInfo.anotherRoom = obj.AnotherRoom
 
-    cc.sys.localStorage.setItem('token', obj.Token)
-    cc.sys.localStorage.setItem('username', obj.Username)
+    cc.sys.localStorage.setItem("token", obj.Token)
+    cc.sys.localStorage.setItem("username", obj.Username)
 }

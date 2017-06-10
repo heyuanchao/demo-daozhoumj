@@ -3,38 +3,54 @@ cc.Class({
 
     properties: {
         dialogPrefab: cc.Prefab,
+        loadingPrefab: cc.Prefab,
     },
 
     // use this for initialization
     onLoad: function () {
         this.btnWeChatLogin = cc.find("Canvas/bg/btn_wechat_login").getComponent(cc.Button)
 
-        this.dotCount = 0
-        this.loading = cc.find("Canvas/loading")
-        this.loading_txt = this.loading.getChildByName("loading_txt").getComponent(cc.Label)
-
         this.dialog = cc.instantiate(this.dialogPrefab)
         this.node.addChild(this.dialog)
 
+        this.loading = cc.instantiate(this.loadingPrefab)
+        this.node.addChild(this.loading)
+
+        this.token = cc.sys.localStorage.getItem("token")
+
+        let self = this
         Notification.on("onopen", function () {
-            sendWeChatLogin()
+            if (self.token) {
+                sendTokenLogin()
+                return
+            }
+
+            if (userInfo.unionid) {
+                sendWeChatLogin()
+                return
+            }
         }, this)
 
         Notification.on("onmessage", this.onResult, this)
 
-        let self = this
         Notification.on("onerror", function () {
-            self.stopLoading()
+            self.loading.getComponent("loading").hide()
             self.dialog.getComponent("dialog").setMessage("登录失败，请稍后重试").setPositiveButton(null).show()
         }, this)
 
-        Notification.on("enable", function() {
+        Notification.on("enable", function () {
             self.btnWeChatLogin.enabled = true
         })
 
-        Notification.on("disable", function() {
+        Notification.on("disable", function () {
             self.btnWeChatLogin.enabled = false
         })
+    },
+
+    start: function () {
+        if (this.token) {
+            this.requestLogin()
+        }
     },
 
     onDestroy: function () {
@@ -46,22 +62,8 @@ cc.Class({
         Notification.offType("disable")
     },
 
-    playEffect: function() {
+    playEffect: function () {
         playEffect("SpecOk.mp3")
-    },
-
-    startLoading() {
-        if (this.loading.active) return
-
-        this.loading.active = true
-        this.schedule(this.updateLoadingLabel, 0.3, this)
-    },
-
-    stopLoading() {
-        if (this.loading.active) {
-            this.loading.active = false
-            this.unschedule(this.updateLoadingLabel)
-        }
     },
 
     updateLoadingLabel() {
@@ -97,7 +99,7 @@ cc.Class({
                 // userInfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"我是谁\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/Po9mkm3Z42tolYpxUVpY6mvCmqalibOpcJ2jG3Qza5qgtibO1NLFNUF7icwCibxPicbGmkoiciaqKEIdvvveIBfEQqal8vkiavHIeqFT\/0\",\"privilege\":[],\"unionid\":\"o8c-nt6tO8aIBNPoxvXOQTVJUxY0\"}");
                 userInfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"在努力的龙小博\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/WT9MJf6I7WAkic7ficWBuYbvkMscic97pBa0BbicwKCmOvicsPr1GozNMWnp4gfwMib0A5zdDyUOjaFFSdrz0viao3oKpsXqAeF9ZJ1\/0\",\"privilege\":[],\"unionid\":\"o8c-nt2jC5loIHg1BQGgYW6aqe60\"}");
                 // userInfo = JSON.parse("{\"openid\":\"ogveqvz3OnJdvicWmZDFXf1I8Xt4\",\"nickname\":\"honey\",\"sex\":1,\"language\":\"zh_CN\",\"city\":\"Shenzhen\",\"province\":\"Guangdong\",\"country\":\"CN\",\"headimgurl\":\"http:\/\/wx.qlogo.cn\/mmopen\/Po9mkm3Z42vkKC5g0b6kzjwUiaCice6Znv9wpCpOIpUjM4fTicPrldibAww7YtTZMlW3teKndBe9GcqBHcStictz3KPayVWnwGicKF\/0\",\"privilege\":[],\"unionid\":\"o8c-ntxW4cW601v6RjaAsExy98w4\"}");
-                self.requestWeChatLogin()
+                self.requestLogin()
             }
         })));
     },
@@ -150,15 +152,15 @@ cc.Class({
                 // userInfo.country = info.country
                 userInfo.headimgurl = info.headimgurl
                 userInfo.unionid = info.unionid
-                self.requestWeChatLogin()
+                self.requestLogin()
             }
         };
         xhr.open("GET", "https://api.weixin.qq.com/sns/userinfo?access_token=" + access_token + "&openid=" + openid, true);
         xhr.send();
     },
 
-    requestWeChatLogin() {
-        this.startLoading()
+    requestLogin() {
+        this.loading.getComponent("loading").show()
 
         this.node.runAction(cc.sequence(cc.delayTime(1), cc.callFunc(function () {
             if (ws == null) {
@@ -168,7 +170,7 @@ cc.Class({
     },
 
     onResult(result) {
-        this.stopLoading()
+        this.loading.getComponent("loading").hide()
         cc.log(result)
         if (result.S2C_Login) {
             cc.log('another room: ' + userInfo.anotherRoom)

@@ -35,11 +35,11 @@ cc.Class({
 
         Notification.on("onclose", this.reconnect, this)
 
-        Notification.on("enable", function() {
+        Notification.on("enable", function () {
             self.setButtonsEnabled(true)
         })
 
-        Notification.on("disable", function() {
+        Notification.on("disable", function () {
             self.setButtonsEnabled(false)
         })
     },
@@ -61,14 +61,16 @@ cc.Class({
         Notification.offType("disable")
     },
 
-    setButtonsEnabled: function(enabled) {
+    setButtonsEnabled: function (enabled) {
         this.btn_create_room.enabled = enabled
         this.btn_setting.enabled = enabled
         this.btn_share.enabled = enabled
     },
 
     reconnect: function () {
-        this.dialog.getComponent("dialog").setMessage("无法连接服务器，是否继续尝试重连?").setPositiveButton(null).setNegativeButton(function () {
+        this.dialog.getComponent("dialog").setMessage("无法连接服务器，是否继续尝试重连?").setPositiveButton(function () {
+            
+        }).setNegativeButton(function () {
             loadScene("scene2_login")
         }).show()
     },
