@@ -19,15 +19,7 @@ window.initWebSocket = function () {
     ws.onmessage = function (evt) {
         let result = JSON.parse(decoder.decode(evt.data))
         if (result.S2C_Login) {
-            userInfo.accountID = result.S2C_Login.AccountID
-            userInfo.nickname = result.S2C_Login.Nickname
-            userInfo.headimgurl = result.S2C_Login.Headimgurl
-            userInfo.sex = result.S2C_Login.Sex
-            userInfo.anotherLogin = result.S2C_Login.AnotherLogin
-            userInfo.anotherRoom = result.S2C_Login.AnotherRoom
-
-            cc.sys.localStorage.setItem('token', result.S2C_Login.Token)
-            cc.sys.localStorage.setItem('username', result.S2C_Login.Username)
+            setUserInfo(result.S2C_Login)
         }
         Notification.emit("onmessage", result)
     }
@@ -59,4 +51,16 @@ window.sendWeChatLogin = function () {
             model: userInfo.model,
         }
     })
+}
+
+window.setUserInfo = function (obj) {
+    userInfo.accountID = obj.AccountID
+    userInfo.nickname = obj.Nickname
+    userInfo.headimgurl = obj.Headimgurl
+    userInfo.sex = obj.Sex
+    userInfo.anotherLogin = obj.AnotherLogin
+    userInfo.anotherRoom = obj.AnotherRoom
+
+    cc.sys.localStorage.setItem('token', obj.Token)
+    cc.sys.localStorage.setItem('username', obj.Username)
 }

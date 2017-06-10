@@ -4,6 +4,9 @@ cc.Class({
     properties: {
         dialogPrefab: cc.Prefab,
         settingPrefab: cc.Prefab,
+        avatar: cc.Sprite,
+        nickname: cc.Label,
+        accountID: cc.Label,
     },
 
     // use this for initialization
@@ -19,6 +22,8 @@ cc.Class({
 
         this.setting = cc.instantiate(this.settingPrefab)
         this.node.addChild(this.setting)
+
+        this.loadUserInfo()
     },
 
     start: function () {
@@ -34,9 +39,34 @@ cc.Class({
         Notification.offType("onerror")
     },
 
-    showSetting: function() {
-        playEffect("SpecOk.mp3")
+    loadUserInfo: function () {
+        if (userInfo.nickname) {
+            this.nickname.string = userInfo.nickname
+        }
 
+        if (userInfo.accountID) {
+            this.accountID.string = 'ID:' + userInfo.accountID
+        }
+
+        if (!userInfo.headimgurl) {
+            userInfo.headimgurl = "http://www.huafeiqipai.com/img/avatar.jpg"
+        }
+
+        let self = this
+        cc.loader.load({ url: userInfo.headimgurl, type: "jpg" }, function (err, texture) {
+            if (err) {
+                cc.log(err)
+            } else {
+                self.avatar.spriteFrame = new cc.SpriteFrame(texture)
+            }
+        })
+    },
+
+    playEffect: function () {
+        playEffect("SpecOk.mp3")
+    },
+
+    showSetting: function () {
         this.setting.getComponent("setting").show()
     },
 
