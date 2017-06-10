@@ -79,7 +79,7 @@ cc.Class({
     },
 
     reconnect: function () {
-        if (this.dialog.node.active) {
+        if (this.dialog.active) {
             return
         }
 

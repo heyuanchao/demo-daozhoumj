@@ -185,7 +185,7 @@ cc.Class({
             } else if (result.S2C_Close.Error === 2) { // S2C_Close_InnerError
                 this.dialog.getComponent("dialog").setTitle("a").setMessage("登录出错，请联系客服").show()
             } else if (result.S2C_Close.Error === 3) { // S2C_Close_TokenInvalid
-
+                localStorageRemoveItem("token")
             } else if (result.S2C_Close.Error === 4) { // S2C_Close_UnionidInvalid
                 this.launch_dialog.getComponent('launch_dialog').show('登录出错，Unionid无效')
             } else if (result.S2C_Close.Error === 5) { // S2C_Close_UsernameInvalid
