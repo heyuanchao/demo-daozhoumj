@@ -63,3 +63,7 @@ window.playEffect = function (audioName) {
         cc.audioEngine.play(audio, false, 1)
     }
 }
+
+window.loadScene = function (sceneName) {
+    cc.director.loadScene(sceneName)
+}

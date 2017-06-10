@@ -3,6 +3,7 @@ cc.Class({
 
     properties: {
         dialogPrefab: cc.Prefab,
+        settingPrefab: cc.Prefab,
     },
 
     // use this for initialization
@@ -12,6 +13,12 @@ cc.Class({
         }, this)
 
         Notification.on("onmessage", this.onResult, this)
+
+        this.dialog = cc.instantiate(this.dialogPrefab)
+        this.node.addChild(this.dialog)
+
+        this.setting = cc.instantiate(this.settingPrefab)
+        this.node.addChild(this.setting)
     },
 
     start: function () {
@@ -25,6 +32,12 @@ cc.Class({
         Notification.offType("onopen")
         Notification.offType("onmessage")
         Notification.offType("onerror")
+    },
+
+    showSetting: function() {
+        playEffect("SpecOk.mp3")
+
+        this.setting.getComponent("setting").show()
     },
 
     onResult(result) {

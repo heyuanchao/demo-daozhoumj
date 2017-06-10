@@ -20,6 +20,10 @@ cc.Class({
         this.negativeButton.node.x = 0
     },
 
+    playEffect: function () {
+        playEffect("SpecOk.mp3")
+    },
+
     setTitle: function (title) {
         if (title != null && trim(title, " ").length != 0) {
             this.title.string = title
@@ -67,8 +71,6 @@ cc.Class({
 
     hide: function () {
         Notification.emit("enable")
-
-        playEffect("SpecOk.mp3")
 
         let self = this
         this.frame.runAction(cc.sequence(cc.scaleTo(0.1, 0), cc.callFunc(function () {

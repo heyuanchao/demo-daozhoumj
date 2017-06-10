@@ -46,6 +46,10 @@ cc.Class({
         Notification.offType("disable")
     },
 
+    playEffect: function() {
+        playEffect("SpecOk.mp3")
+    },
+
     startLoading() {
         if (this.loading.active) return
 
@@ -75,8 +79,6 @@ cc.Class({
     },
 
     wechatLogin: function () {
-        playEffect("SpecOk.mp3")
-
         let self = this
         this.node.runAction(cc.sequence(cc.delayTime(0.3), cc.callFunc(function () {
             self.node.stopAllActions()
