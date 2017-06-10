@@ -28,6 +28,10 @@ cc.Class({
     },
 
     show: function () {
+        if (this.node.active) {
+            return
+        }
+
         Notification.emit("disable")
 
         this.node.active = true
@@ -35,10 +39,12 @@ cc.Class({
     },
 
     hide: function () {
-        Notification.emit("enable")
+        if (this.node.active) {
+            Notification.emit("enable")
 
-        this.unschedule(this.updateMessage)
-        this.node.active = false
+            this.unschedule(this.updateMessage)
+            this.node.active = false
+        }
     },
 
     // called every frame, uncomment this function to activate update callback

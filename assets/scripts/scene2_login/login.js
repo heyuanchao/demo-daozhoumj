@@ -183,7 +183,7 @@ cc.Class({
             if (result.S2C_Close.Error === 1) { // S2C_Close_LoginRepeated
                 //this.launch_dialog.getComponent('launch_dialog').show('您的账号在其他设备上线，非本人操作请注意修改密码')
             } else if (result.S2C_Close.Error === 2) { // S2C_Close_InnerError
-                this.dialog.getComponent("dialog").setTitle("a").setMessage("登录出错，请联系客服").show()
+                this.dialog.getComponent("dialog").setMessage("登录出错，请联系客服").show()
             } else if (result.S2C_Close.Error === 3) { // S2C_Close_TokenInvalid
                 localStorageRemoveItem("token")
             } else if (result.S2C_Close.Error === 4) { // S2C_Close_UnionidInvalid

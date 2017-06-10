@@ -41,8 +41,12 @@ cc.Class({
     setPositiveButton: function (callback) {
         this.positiveButton.node.active = true
         if (callback) {
-            this.positiveButton.node.on("click", callback, this)
+            if (this.positiveCallback) {
+                this.positiveButton.node.off("click", this.positiveCallback, this)
+            }
 
+            this.positiveCallback = callback
+            this.positiveButton.node.on("click", callback, this)
         }
 
         return this
@@ -51,6 +55,11 @@ cc.Class({
     setNegativeButton: function (callback) {
         this.negativeButton.node.active = true
         if (callback) {
+            if (this.negativeCallback) {
+                this.negativeButton.node.off("click", this.negativeCallback, this)
+            }
+
+            this.negativeCallback = callback
             this.negativeButton.node.on("click", callback, this)
         }
 
@@ -58,6 +67,10 @@ cc.Class({
     },
 
     show: function () {
+        if (this.node.active) {
+            return
+        }
+        
         if (this.positiveButton.node.active && this.negativeButton.node.active) {
             this.positiveButton.node.x = 180
             this.negativeButton.node.x = -180
@@ -70,12 +83,14 @@ cc.Class({
     },
 
     hide: function () {
-        Notification.emit("enable")
+        if (this.node.active) {
+            Notification.emit("enable")
 
-        let self = this
-        this.frame.runAction(cc.sequence(cc.scaleTo(0.1, 0), cc.callFunc(function () {
-            self.node.active = false
-        })))
+            let self = this
+            this.frame.runAction(cc.sequence(cc.scaleTo(0.1, 0), cc.callFunc(function () {
+                self.node.active = false
+            })))
+        }
     },
 
     // called every frame, uncomment this function to activate update callback

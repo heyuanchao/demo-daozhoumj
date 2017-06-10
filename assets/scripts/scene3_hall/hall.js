@@ -34,12 +34,14 @@ cc.Class({
 
         let self = this
         Notification.on("onerror", function () {
-            this.loading2.getComponent("loading2").hide()
+            self.loading2.getComponent("loading2").hide()
 
             self.dialog.getComponent("dialog").setMessage("无法连接服务器，是否继续尝试重连?").setPositiveButton(function () {
-                self.reconnect()
+                self.loading2.getComponent("loading2").show()
+                initWebSocket()
             }).setNegativeButton(function () {
-                loadScene("scene2_login")
+                localStorageRemoveItem("token")
+                loadScene(login)
             }).show()
             // self.dialog.getComponent("dialog").setMessage("登录失败，请稍后重试").setPositiveButton(null).show()
         }, this)
