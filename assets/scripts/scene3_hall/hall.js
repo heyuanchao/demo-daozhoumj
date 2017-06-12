@@ -36,13 +36,14 @@ cc.Class({
         Notification.on("onerror", function () {
             self.loading2.getComponent("loading2").hide()
 
-            self.dialog.getComponent("dialog").setMessage("无法连接服务器，是否继续尝试重连?").setPositiveButton(function () {
-                self.loading2.getComponent("loading2").show()
-                initWebSocket()
-            }).setNegativeButton(function () {
-                localStorageRemoveItem("token")
-                loadScene(login)
-            }).show()
+            self.dialog.getComponent("dialog").setMessage("无法连接服务器，是否继续尝试重连?")
+                .setPositiveButton(function () {
+                    self.loading2.getComponent("loading2").show()
+                    initWebSocket()
+                }).setNegativeButton(function () {
+                    localStorageRemoveItem("token")
+                    loadScene(login)
+                }).show()
             // self.dialog.getComponent("dialog").setMessage("登录失败，请稍后重试").setPositiveButton(null).show()
         }, this)
 
@@ -123,15 +124,18 @@ cc.Class({
     onResult(result) {
         if (result.S2C_Login) {
             cc.log('another room: ' + userInfo.anotherRoom)
-            if (userinfo.anotherRoom) {
+            if (userInfo.anotherRoom) {
                 sendEnterRoom()
             } else {
-                loadUserinfo(this.nickname, userinfo.nickname, this.accountID, userinfo.accountID, this.headimg, userinfo.headimgurl, userinfo.sex)
+                this.loadUserInfo()
             }
         } else if (result.S2C_Close) {
             if (result.S2C_Close.Error === 1) { // S2C_Close_LoginRepeated
-                cc.log("您的账号在其他设备上线，非本人操作请注意修改密码")
-                cc.director.loadScene(login)
+                this.dialog.getComponent("dialog").setMessage("您的账号在其他设备上线，非本人操作请注意修改密码")
+                    .setPositiveButton(function () {
+                        localStorageRemoveItem("token")
+                        cc.director.loadScene(login)
+                    }).show()
             } else if (result.S2C_Close.Error === 2) { // S2C_Close_InnerError
                 this.lobby_dialog.getComponent('lobby_dialog').show('登录态失效，请您重新登录!', 1)
             } else if (result.S2C_Close.Error === 3) { // S2C_Close_TokenInvalid

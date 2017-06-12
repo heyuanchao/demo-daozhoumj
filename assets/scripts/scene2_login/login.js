@@ -16,11 +16,10 @@ cc.Class({
         this.loading = cc.instantiate(this.loadingPrefab)
         this.node.addChild(this.loading)
 
-        this.token = cc.sys.localStorage.getItem("token")
-
         let self = this
         Notification.on("onopen", function () {
-            if (self.token) {
+            let token = localStorageGetItem("token")
+            if (token) {
                 sendTokenLogin()
                 return
             }
@@ -48,7 +47,8 @@ cc.Class({
     },
 
     start: function () {
-        if (this.token) {
+        let token = localStorageGetItem("token")
+        if (token) {
             this.requestLogin()
         }
     },
@@ -126,8 +126,8 @@ cc.Class({
                 if (debug) {
                     cc.log(xhr.responseText);
                 }
-                let token = JSON.parse(xhr.responseText);
-                self.getUserInfo(token.access_token, token.openid);
+                let tokenInfo = JSON.parse(xhr.responseText);
+                self.getUserInfo(tokenInfo.access_token, tokenInfo.openid);
             }
         };
         xhr.open("GET", "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appid + "&secret=" + appsecret + "&code=" + code + "&grant_type=authorization_code", true);
