@@ -2,7 +2,8 @@
 var textDecoder = require('text-encoding').TextDecoder
 window.decoder = new textDecoder('utf-8')
 
-window.WSAddr = 'ws://119.29.250.181:3654'
+// window.WSAddr = 'ws://119.29.250.181:3654'
+window.WSAddr = 'ws://192.168.1.168:3654'
 window.ws = null
 window.initWebSocket = function () {
     if (ws != null) {
@@ -18,9 +19,13 @@ window.initWebSocket = function () {
 
     ws.onmessage = function (evt) {
         let result = JSON.parse(decoder.decode(evt.data))
-        if (result.S2C_Login) {
+        if (result.S2C_Heartbeat) {
+            cc.log("发送心跳")
+            sendJSONObject({ C2S_Heartbeat: {} })
+        } else if (result.S2C_Login) {
             setUserInfo(result.S2C_Login)
         }
+
         Notification.emit("onmessage", result)
     }
 

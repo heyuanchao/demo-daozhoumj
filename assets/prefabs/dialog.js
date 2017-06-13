@@ -13,7 +13,7 @@ cc.Class({
     onLoad: function () {
         this.node.active = false
 
-        this.positiveButton.node.active = false
+        // this.positiveButton.node.active = false
         this.positiveButton.node.x = 0
 
         this.negativeButton.node.active = false

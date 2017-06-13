@@ -171,7 +171,7 @@ cc.Class({
 
     onResult(result) {
         this.loading.getComponent("loading").hide()
-        cc.log(result)
+
         if (result.S2C_Login) {
             cc.log('another room: ' + userInfo.anotherRoom)
             if (userInfo.anotherRoom) {
@@ -186,10 +186,12 @@ cc.Class({
                 this.dialog.getComponent("dialog").setMessage("登录出错，请联系客服").show()
             } else if (result.S2C_Close.Error === 3) { // S2C_Close_TokenInvalid
                 localStorageRemoveItem("token")
+                this.dialog.getComponent("dialog").setMessage("登录态失效，请您重新登录").show()
             } else if (result.S2C_Close.Error === 4) { // S2C_Close_UnionidInvalid
-                this.launch_dialog.getComponent('launch_dialog').show('登录出错，Unionid无效')
+                this.dialog.getComponent("dialog").setMessage("登录出错，Unionid无效").show()
             } else if (result.S2C_Close.Error === 5) { // S2C_Close_UsernameInvalid
-
+                localStorageRemoveItem("token")
+                this.dialog.getComponent("dialog").setMessage("登录态失效，用户名无效").show()
             }
         } else if (result.S2C_EnterRoom) {
             if (result.S2C_EnterRoom.Error === 0) { // S2C_EnterRoom_OK

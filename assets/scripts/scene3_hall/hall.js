@@ -44,7 +44,6 @@ cc.Class({
                     localStorageRemoveItem("token")
                     loadScene(login)
                 }).show()
-            // self.dialog.getComponent("dialog").setMessage("登录失败，请稍后重试").setPositiveButton(null).show()
         }, this)
 
         Notification.on("onclose", this.reconnect, this)
@@ -122,6 +121,8 @@ cc.Class({
     },
 
     onResult(result) {
+        this.loading2.getComponent("loading2").hide()
+
         if (result.S2C_Login) {
             cc.log('another room: ' + userInfo.anotherRoom)
             if (userInfo.anotherRoom) {
@@ -137,13 +138,29 @@ cc.Class({
                         cc.director.loadScene(login)
                     }).show()
             } else if (result.S2C_Close.Error === 2) { // S2C_Close_InnerError
-                this.lobby_dialog.getComponent('lobby_dialog').show('登录态失效，请您重新登录!', 1)
+                localStorageRemoveItem("token")
+                this.dialog.getComponent("dialog").setMessage("登录态失效，请您重新登录")
+                    .setPositiveButton(function () {
+                        cc.director.loadScene(login)
+                    }).show()
             } else if (result.S2C_Close.Error === 3) { // S2C_Close_TokenInvalid
-                this.lobby_dialog.getComponent('lobby_dialog').show('登录态失效，请您重新登录!', 1)
+                localStorageRemoveItem("token")
+                this.dialog.getComponent("dialog").setMessage("登录态失效，请您重新登录")
+                    .setPositiveButton(function () {
+                        cc.director.loadScene(login)
+                    }).show()
             } else if (result.S2C_Close.Error === 4) { // S2C_Close_UnionidInvalid
-                this.lobby_dialog.getComponent('lobby_dialog').show('登录出错，Unionid无效')
+                localStorageRemoveItem("token")
+                this.dialog.getComponent("dialog").setMessage("登录出错，Unionid无效")
+                    .setPositiveButton(function () {
+                        cc.director.loadScene(login)
+                    }).show()
             } else if (result.S2C_Close.Error === 5) { // S2C_Close_UsernameInvalid
-                this.lobby_dialog.getComponent('lobby_dialog').show('登录态失效，请您重新登录!', 1)
+                localStorageRemoveItem("token")
+                this.dialog.getComponent("dialog").setMessage("登录出错，用户名无效")
+                    .setPositiveButton(function () {
+                        cc.director.loadScene(login)
+                    }).show()
             }
         } else if (result.S2C_CreateRoom) {
             if (result.S2C_CreateRoom.Error === 1) { // S2C_CreateRoom_InnerError
@@ -152,9 +169,6 @@ cc.Class({
                 this.lobby_dialog.getComponent('lobby_dialog').show('房间: ' + result.S2C_CreateRoom.RoomNumber + ' 已存在', 1)
             } else if (result.S2C_CreateRoom.Error === 3) { // S2C_CreateRoom_InOtherRoom
                 this.lobby_dialog.getComponent('lobby_dialog').show('亲，你正在其他房间对局，是否回去？', 1)
-                this.onOKClick = function () {
-
-                }
             }
         } else if (result.S2C_EnterRoom) {
             if (result.S2C_EnterRoom.Error === 0) { // S2C_EnterRoom_OK
@@ -165,9 +179,6 @@ cc.Class({
                 this.lobby_dialog.getComponent('lobby_dialog').show('房间: ' + result.S2C_EnterRoom.RoomNumber + ' 不允许旁观', 1)
             } else if (result.S2C_EnterRoom.Error === 3) { // S2C_EnterRoom_InOtherRoom
                 this.lobby_dialog.getComponent('lobby_dialog').show('亲，你正在其他房间对局，是否回去？', 1)
-                this.onOKClick = function () {
-
-                }
             }
         } else if (result.S2C_GetPublicRoomSetting) {
             let data = result.S2C_GetPublicRoomSetting.Data
