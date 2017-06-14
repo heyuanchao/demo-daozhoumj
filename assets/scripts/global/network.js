@@ -23,7 +23,7 @@ window.initWebSocket = function () {
             sendJSONObject({ C2S_Heartbeat: {} })
             return
         }
-        
+
         if (result.S2C_Login) {
             setUserInfo(result.S2C_Login)
         }

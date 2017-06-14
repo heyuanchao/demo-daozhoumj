@@ -11,17 +11,19 @@ cc.Class({
         this.node.active = false
     },
 
-    playEffect: function() {
+    playEffect: function () {
         playEffect("SpecOk.mp3")
     },
 
-    switchAccount: function() {
+    switchAccount: function () {
         localStorageRemoveItem("token")
-        closeWebSocket()
-        loadScene("scene2_login")
+        cc.director.loadScene(login, function () {
+            cc.log("aaa")
+            closeWebSocket()
+        })
     },
 
-    hideSwitchAccount: function() {
+    hideSwitchAccount: function () {
         this.btn_switch.node.active = false
 
         return this

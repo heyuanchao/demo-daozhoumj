@@ -19,6 +19,7 @@ cc.Class({
         let self = this
         Notification.on("onopen", function () {
             let token = localStorageGetItem("token")
+            cc.log("token: " + token)
             if (token) {
                 sendTokenLogin()
                 return
@@ -91,7 +92,6 @@ cc.Class({
 
             if (cc.sys.isMobile) {
                 // cc.find('Bgm').getComponent('bgm').pause();
-
                 if (cc.sys.os == cc.sys.OS_ANDROID) {
                     var className = "org/cocos2dx/javascript/AppActivity"
                     var methodName = "wechatLogin"
@@ -181,7 +181,7 @@ cc.Class({
             if (userInfo.anotherRoom) {
                 sendEnterRoom()
             } else {
-                cc.director.loadScene(hall)
+                loadScene(hall)
             }
         } else if (result.S2C_Close) {
             if (result.S2C_Close.Error === 1) { // S2C_Close_LoginRepeated

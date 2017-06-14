@@ -71,7 +71,6 @@ cc.Class({
     },
 
     show: function () {
-        cc.log(this.node.active)
         if (this.node.active) {
             return
         }
