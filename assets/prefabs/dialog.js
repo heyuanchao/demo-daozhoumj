@@ -13,7 +13,10 @@ cc.Class({
     onLoad: function () {
         this.node.active = false
 
-        // this.positiveButton.node.active = false
+        this.initializeButtons()
+    },
+
+    initializeButtons: function () {
         this.positiveButton.node.x = 0
 
         this.negativeButton.node.active = false
@@ -33,6 +36,7 @@ cc.Class({
     },
 
     setMessage: function (message) {
+        this.initializeButtons()
         this.message.string = message
 
         return this
@@ -67,10 +71,11 @@ cc.Class({
     },
 
     show: function () {
+        cc.log(this.node.active)
         if (this.node.active) {
             return
         }
-        
+
         if (this.positiveButton.node.active && this.negativeButton.node.active) {
             this.positiveButton.node.x = 180
             this.negativeButton.node.x = -180

@@ -39,7 +39,10 @@ cc.Class({
             self.dialog.getComponent("dialog").setMessage("无法连接服务器，是否继续尝试重连?")
                 .setPositiveButton(function () {
                     self.loading2.getComponent("loading2").show()
-                    initWebSocket()
+                    // 延时0.2秒等待缩放动画完成
+                    self.node.runAction(cc.sequence(cc.delayTime(0.2), cc.callFunc(function () {
+                        initWebSocket()
+                    })));
                 }).setNegativeButton(function () {
                     localStorageRemoveItem("token")
                     loadScene(login)
@@ -55,12 +58,15 @@ cc.Class({
         Notification.on("disable", function () {
             self.setButtonsEnabled(false)
         })
+
+        cc.log("hall onLoad")
     },
 
     start: function () {
+        cc.log("hall start")
         if (userInfo.anotherLogin) {
             userInfo.anotherLogin = false
-            cc.log("您的账号刚在其他设备上线，请您检查账号安全")
+            this.dialog.getComponent("dialog").setMessage("您的账号刚在其他设备上线，请您检查账号安全").show()
         }
     },
 
@@ -81,6 +87,7 @@ cc.Class({
     },
 
     reconnect: function () {
+        cc.log("hall reconnect")
         if (this.dialog.active) {
             return
         }
@@ -121,10 +128,11 @@ cc.Class({
     },
 
     onResult(result) {
+        cc.log(result)
         this.loading2.getComponent("loading2").hide()
 
         if (result.S2C_Login) {
-            cc.log('another room: ' + userInfo.anotherRoom)
+            cc.log('hall another room: ' + userInfo.anotherRoom)
             if (userInfo.anotherRoom) {
                 sendEnterRoom()
             } else {
