@@ -147,7 +147,7 @@ cc.Class({
                     }).show()
             } else if (result.S2C_Close.Error === 2) { // S2C_Close_InnerError
                 localStorageRemoveItem("token")
-                this.dialog.getComponent("dialog").setMessage("登录态失效，请您重新登录")
+                this.dialog.getComponent("dialog").setMessage("登录出错，请您重新登录")
                     .setPositiveButton(function () {
                         cc.director.loadScene(login)
                     }).show()
@@ -159,7 +159,7 @@ cc.Class({
                     }).show()
             } else if (result.S2C_Close.Error === 4) { // S2C_Close_UnionidInvalid
                 localStorageRemoveItem("token")
-                this.dialog.getComponent("dialog").setMessage("登录出错，Unionid无效")
+                this.dialog.getComponent("dialog").setMessage("登录出错，微信ID无效")
                     .setPositiveButton(function () {
                         cc.director.loadScene(login)
                     }).show()
