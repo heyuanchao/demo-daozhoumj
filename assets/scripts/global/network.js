@@ -3,7 +3,7 @@ var textDecoder = require('text-encoding').TextDecoder
 window.decoder = new textDecoder('utf-8')
 
 window.WSAddr = 'ws://119.29.250.181:3654'
-// window.WSAddr = 'ws://192.168.1.117:3654'
+// window.WSAddr = 'ws://192.168.1.113:3654'
 window.ws = null
 window.initWebSocket = function () {
     if (ws != null) {

@@ -19,7 +19,6 @@ cc.Class({
         let self = this
         Notification.on("onopen", function () {
             let token = localStorageGetItem("token")
-            cc.log("token: " + token)
             if (token) {
                 sendTokenLogin()
                 return

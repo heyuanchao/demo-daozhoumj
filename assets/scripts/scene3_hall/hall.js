@@ -8,9 +8,9 @@ cc.Class({
         avatar: cc.Sprite,
         nickname: cc.Label,
         accountID: cc.Label,
-        btn_create_room: cc.Button,
-        btn_setting: cc.Button,
-        btn_share: cc.Button,
+        btnCreateRoom: cc.Button,
+        btnSetUp: cc.Button,
+        btnShare: cc.Button,
     },
 
     // use this for initialization
@@ -23,6 +23,9 @@ cc.Class({
 
         this.loading2 = cc.instantiate(this.loading2Prefab)
         this.node.addChild(this.loading2)
+
+        this.createRoom = cc.find("Canvas/bg/create_room")
+        this.createRoomFrame = cc.find("Canvas/bg/create_room/frame")
 
         this.loadUserInfo()
 
@@ -81,9 +84,9 @@ cc.Class({
     },
 
     setButtonsEnabled: function (enabled) {
-        this.btn_create_room.enabled = enabled
-        this.btn_setting.enabled = enabled
-        this.btn_share.enabled = enabled
+        this.btnCreateRoom.enabled = enabled
+        this.btnSetUp.enabled = enabled
+        this.btnShare.enabled = enabled
     },
 
     reconnect: function () {
@@ -125,6 +128,25 @@ cc.Class({
 
     showSetting: function () {
         this.setting.getComponent("setting").show()
+    },
+
+    showCreateRoom: function () {
+        let self = this
+        this.node.runAction(cc.sequence(cc.delayTime(0.3), cc.callFunc(function () {
+            Notification.emit("disable")
+
+            self.createRoom.active = true
+            self.createRoomFrame.runAction(cc.sequence(cc.scaleTo(0.1, 1.1), cc.scaleTo(0.1, 0.9), cc.scaleTo(0.1, 1)))
+        })))
+    },
+
+    hideCreatRoom: function () {
+        Notification.emit("enable")
+
+        let self = this
+        this.createRoomFrame.runAction(cc.sequence(cc.scaleTo(0.1, 0), cc.callFunc(function () {
+            self.createRoom.active = false
+        })))
     },
 
     onResult(result) {
