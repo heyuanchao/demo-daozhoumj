@@ -9,3 +9,4 @@ window.roomInfo = {}
 window.launcher = "scene1_launcher"
 window.login = "scene2_login"
 window.hall = "scene3_hall"
+window.room = "scene4_room"

@@ -1,9 +1,9 @@
 // https://github.com/inexorabletash/text-encoding
-var textDecoder = require('text-encoding').TextDecoder
-window.decoder = new textDecoder('utf-8')
+var textDecoder = require("text-encoding").TextDecoder
+window.decoder = new textDecoder("utf-8")
 
-window.WSAddr = 'ws://119.29.250.181:3654'
-// window.WSAddr = 'ws://192.168.1.113:3654'
+// window.WSAddr = "ws://119.29.250.181:3654"
+window.WSAddr = "ws://192.168.1.168:3654"
 window.ws = null
 window.initWebSocket = function () {
     if (ws != null) {
@@ -11,7 +11,7 @@ window.initWebSocket = function () {
     }
 
     ws = new WebSocket(WSAddr)
-    ws.binaryType = 'arraybuffer'
+    ws.binaryType = "arraybuffer"
 
     ws.onopen = function (evt) {
         Notification.emit("onopen")
@@ -20,12 +20,23 @@ window.initWebSocket = function () {
     ws.onmessage = function (evt) {
         let result = JSON.parse(decoder.decode(evt.data))
         if (result.S2C_Heartbeat) {
-            sendJSONObject({ C2S_Heartbeat: {} })
+            sendJsonObject({ C2S_Heartbeat: {} })
             return
         }
 
         if (result.S2C_Login) {
             setUserInfo(result.S2C_Login)
+        } else if (result.S2C_EnterRoom) {
+            let obj = result.S2C_EnterRoom
+            if (obj.Error === 0) { // S2C_EnterRoom_OK
+                roomInfo.number = obj.RoomNumber
+                roomInfo.desc = obj.RoomDesc
+                roomInfo.processing = obj.GameProcessing
+
+                userInfo.position = obj.Position
+                userInfo.owner = obj.Owner
+                userInfo.userReady = obj.UserReady
+            }
         }
 
         Notification.emit("onmessage", result)
@@ -49,12 +60,12 @@ window.closeWebSocket = function () {
     if (ws) ws.close()
 }
 
-window.sendJSONObject = function (obj) {
+window.sendJsonObject = function (obj) {
     if (ws && ws.readyState == WebSocket.OPEN) ws.send(JSON.stringify(obj))
 }
 
 window.sendWeChatLogin = function () {
-    sendJSONObject({
+    sendJsonObject({
         C2S_WeChatLogin: {
             nickname: userInfo.nickname,
             sex: userInfo.sex,
@@ -67,10 +78,26 @@ window.sendWeChatLogin = function () {
 }
 
 window.sendTokenLogin = function () {
-    sendJSONObject({
+    sendJsonObject({
         C2S_TokenLogin: {
             username: localStorageGetItem("username"),
             token: localStorageGetItem("token"),
+        }
+    })
+}
+
+window.sendCreateGanZhouRoom = function () {
+    sendJsonObject({
+        C2S_CreateGanZhouRoom: {
+
+        }
+    })
+}
+
+window.sendCreateRunJinRoom = function () {
+    sendJsonObject({
+        C2S_CreateRuiJinRoom: {
+
         }
     })
 }

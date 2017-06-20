@@ -67,9 +67,13 @@ cc.Class({
 
     start: function () {
         cc.log("hall start")
-        if (userInfo.anotherLogin) {
-            userInfo.anotherLogin = false
-            this.dialog.getComponent("dialog").setMessage("您的账号刚在其他设备上线，请您检查账号安全").show()
+        if (ws === null) {
+            this.reconnect()
+        } else {
+            if (userInfo.anotherLogin) {
+                userInfo.anotherLogin = false
+                this.dialog.getComponent("dialog").setMessage("您的账号刚在其他设备上线，请您检查账号安全").show()
+            }
         }
     },
 
@@ -140,6 +144,14 @@ cc.Class({
         })))
     },
 
+    createGanZhouRoom: function () {
+        sendCreateGanZhouRoom()
+    },
+
+    createRunJinRoom: function () {
+        sendCreateRunJinRoom()
+    },
+
     hideCreatRoom: function () {
         Notification.emit("enable")
 
@@ -162,57 +174,71 @@ cc.Class({
             }
         } else if (result.S2C_Close) {
             if (result.S2C_Close.Error === 1) { // S2C_Close_LoginRepeated
-                this.dialog.getComponent("dialog").setMessage("您的账号在其他设备上线，非本人操作请注意修改密码")
-                    .setPositiveButton(function () {
+                this.dialog.getComponent("dialog").setMessage("您的账号在其他设备上线，非本人操作请注意修改密码").
+                    setPositiveButton(function () {
                         localStorageRemoveItem("token")
                         cc.director.loadScene(login)
                     }).show()
             } else if (result.S2C_Close.Error === 2) { // S2C_Close_InnerError
                 localStorageRemoveItem("token")
-                this.dialog.getComponent("dialog").setMessage("登录出错，请您重新登录")
-                    .setPositiveButton(function () {
+                this.dialog.getComponent("dialog").setMessage("登录出错，请您重新登录").
+                    setPositiveButton(function () {
                         cc.director.loadScene(login)
                     }).show()
             } else if (result.S2C_Close.Error === 3) { // S2C_Close_TokenInvalid
                 localStorageRemoveItem("token")
-                this.dialog.getComponent("dialog").setMessage("登录态失效，请您重新登录")
-                    .setPositiveButton(function () {
+                this.dialog.getComponent("dialog").setMessage("登录态失效，请您重新登录").
+                    setPositiveButton(function () {
                         cc.director.loadScene(login)
                     }).show()
             } else if (result.S2C_Close.Error === 4) { // S2C_Close_UnionidInvalid
                 localStorageRemoveItem("token")
-                this.dialog.getComponent("dialog").setMessage("登录出错，微信ID无效")
-                    .setPositiveButton(function () {
+                this.dialog.getComponent("dialog").setMessage("登录出错，微信ID无效").
+                    setPositiveButton(function () {
                         cc.director.loadScene(login)
                     }).show()
             } else if (result.S2C_Close.Error === 5) { // S2C_Close_UsernameInvalid
                 localStorageRemoveItem("token")
-                this.dialog.getComponent("dialog").setMessage("登录出错，用户名无效")
-                    .setPositiveButton(function () {
+                this.dialog.getComponent("dialog").setMessage("登录出错，用户名无效").
+                    setPositiveButton(function () {
                         cc.director.loadScene(login)
                     }).show()
             }
         } else if (result.S2C_CreateRoom) {
             if (result.S2C_CreateRoom.Error === 1) { // S2C_CreateRoom_InnerError
-                this.lobby_dialog.getComponent('lobby_dialog').show('房间创建出错，请联系客服')
+                this.dialog.getComponent("dialog").setMessage("创建房间出错，请联系客服").
+                    setPositiveButton(function () {
+
+                    }).show()
             } else if (result.S2C_CreateRoom.Error === 2) { // S2C_CreateRoom_CreateRepeated
-                this.lobby_dialog.getComponent('lobby_dialog').show('房间: ' + result.S2C_CreateRoom.RoomNumber + ' 已存在', 1)
+                this.dialog.getComponent("dialog").setMessage("房间: " + result.S2C_CreateRoom.RoomNumber + " 已存在").
+                    setPositiveButton(function () {
+
+                    }).show()
             } else if (result.S2C_CreateRoom.Error === 3) { // S2C_CreateRoom_InOtherRoom
-                this.lobby_dialog.getComponent('lobby_dialog').show('亲，你正在其他房间对局，是否回去？', 1)
+                this.dialog.getComponent("dialog").setMessage("正在其他房间对局，是否回去？").
+                    setPositiveButton(function () {
+
+                    }).show()
             }
         } else if (result.S2C_EnterRoom) {
             if (result.S2C_EnterRoom.Error === 0) { // S2C_EnterRoom_OK
-                cc.director.loadScene('room')
+                loadScene(room)
             } else if (result.S2C_EnterRoom.Error === 1) { // S2C_EnterRoom_NotCreated
-                this.lobby_dialog.getComponent('lobby_dialog').show('房间: ' + result.S2C_EnterRoom.RoomNumber + ' 未创建', 1)
+                this.dialog.getComponent("dialog").show('房间：' + result.S2C_EnterRoom.RoomNumber + ' 未创建', 1)
             } else if (result.S2C_EnterRoom.Error === 2) { // S2C_EnterRoom_NotAllowBystander
-                this.lobby_dialog.getComponent('lobby_dialog').show('房间: ' + result.S2C_EnterRoom.RoomNumber + ' 不允许旁观', 1)
+                this.dialog.getComponent("dialog").show('房间：' + result.S2C_EnterRoom.RoomNumber + ' 不允许旁观', 1)
             } else if (result.S2C_EnterRoom.Error === 3) { // S2C_EnterRoom_InOtherRoom
-                this.lobby_dialog.getComponent('lobby_dialog').show('亲，你正在其他房间对局，是否回去？', 1)
+                this.dialog.getComponent("dialog").setMessage("正在其他房间对局，是否回去？").
+                    setPositiveButton(function () {
+
+                    }).show()
+            } else if (result.S2C_EnterRoom.Error === 4) { // S2C_EnterRoom_Unknown
+                this.dialog.getComponent("dialog").setMessage("进入房间：" + result.S2C_EnterRoom.RoomNumber + " 出错，请稍后重试").
+                    setPositiveButton(function () {
+
+                    }).show()
             }
-        } else if (result.S2C_GetPublicRoomSetting) {
-            let data = result.S2C_GetPublicRoomSetting.Data
-            cc.log(data)
         }
     },
 

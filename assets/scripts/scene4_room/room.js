@@ -4,6 +4,7 @@ cc.Class({
     properties: {
         dialogPrefab: cc.Prefab,
         settingPrefab: cc.Prefab,
+        roomNumber: cc.Label,
     },
 
     // use this for initialization
@@ -13,6 +14,14 @@ cc.Class({
 
         this.setting = cc.instantiate(this.settingPrefab)
         this.node.addChild(this.setting)
+
+        this.loadRoomInfo()
+    },
+
+    loadRoomInfo: function () {
+        if (roomInfo.number) {
+            this.roomNumber.string += roomInfo.number
+        }
     },
 
     playEffect: function () {
