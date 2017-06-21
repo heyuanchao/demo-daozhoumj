@@ -27,6 +27,9 @@ cc.Class({
         this.createRoom = cc.find("Canvas/bg/create_room")
         this.createRoomFrame = cc.find("Canvas/bg/create_room/frame")
 
+        this.enterRoom = cc.find("Canvas/bg/enter_room")
+        this.enterRoomFrame = cc.find("Canvas/bg/enter_room/frame")
+
         this.loadUserInfo()
 
         Notification.on("onopen", function () {
@@ -144,6 +147,15 @@ cc.Class({
         })))
     },
 
+    hideCreatRoom: function () {
+        Notification.emit("enable")
+
+        let self = this
+        this.createRoomFrame.runAction(cc.sequence(cc.scaleTo(0.1, 0), cc.callFunc(function () {
+            self.createRoom.active = false
+        })))
+    },
+
     createGanZhouRoom: function () {
         sendCreateGanZhouRoom()
     },
@@ -152,12 +164,22 @@ cc.Class({
         sendCreateRunJinRoom()
     },
 
-    hideCreatRoom: function () {
+    showEnterRoom: function () {
+        let self = this
+        this.node.runAction(cc.sequence(cc.delayTime(0.3), cc.callFunc(function () {
+            Notification.emit("disable")
+
+            self.enterRoom.active = true
+            self.enterRoomFrame.runAction(cc.sequence(cc.scaleTo(0.1, 1.1), cc.scaleTo(0.1, 0.9), cc.scaleTo(0.1, 1)))
+        })))
+    },
+
+    hideEnterRoom: function () {
         Notification.emit("enable")
 
         let self = this
-        this.createRoomFrame.runAction(cc.sequence(cc.scaleTo(0.1, 0), cc.callFunc(function () {
-            self.createRoom.active = false
+        this.enterRoomFrame.runAction(cc.sequence(cc.scaleTo(0.1, 0), cc.callFunc(function () {
+            self.enterRoom.active = false
         })))
     },
 
