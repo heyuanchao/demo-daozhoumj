@@ -5117,6 +5117,9 @@
     "btnCreateRoom": {
       "__id__": 8
     },
+    "btnEnterRoom": {
+      "__id__": 13
+    },
     "btnSetUp": {
       "__id__": 36
     },
