@@ -11,8 +11,12 @@ cc.Class({
         this.node.active = false
     },
 
-    playEffect: function () {
-        playEffect("SpecOk.mp3")
+    playOkEffect: function () {
+        playEffect("SpecOk.wav")
+    },
+
+    playCancelEffect: function () {
+        playEffect("SpecCancelOrReturn.wav")
     },
 
     switchAccount: function () {

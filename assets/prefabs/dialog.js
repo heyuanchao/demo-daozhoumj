@@ -23,10 +23,14 @@ cc.Class({
         this.negativeButton.node.x = 0
     },
 
-    playEffect: function () {
-        playEffect("SpecOk.mp3")
+    playOkEffect: function () {
+        playEffect("SpecOk.wav")
     },
 
+    playCancelEffect: function () {
+        playEffect("SpecCancelOrReturn.wav")
+    },
+    
     setTitle: function (title) {
         if (title != null && trim(title, " ").length != 0) {
             this.title.string = title
