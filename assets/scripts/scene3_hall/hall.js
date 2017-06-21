@@ -9,6 +9,7 @@ cc.Class({
         nickname: cc.Label,
         accountID: cc.Label,
         btnCreateRoom: cc.Button,
+        btnEnterRoom: cc.Button,
         btnSetUp: cc.Button,
         btnShare: cc.Button,
     },
@@ -92,6 +93,7 @@ cc.Class({
 
     setButtonsEnabled: function (enabled) {
         this.btnCreateRoom.enabled = enabled
+        this.btnEnterRoom.enabled = enabled
         this.btnSetUp.enabled = enabled
         this.btnShare.enabled = enabled
     },
