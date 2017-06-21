@@ -211,10 +211,7 @@ cc.Class({
 
                     }).show()
             } else if (result.S2C_CreateRoom.Error === 2) { // S2C_CreateRoom_CreateRepeated
-                this.dialog.getComponent("dialog").setMessage("房间: " + result.S2C_CreateRoom.RoomNumber + " 已存在").
-                    setPositiveButton(function () {
-
-                    }).show()
+                this.dialog.getComponent("dialog").setMessage("房间: " + result.S2C_CreateRoom.RoomNumber + " 已存在").show()
             } else if (result.S2C_CreateRoom.Error === 3) { // S2C_CreateRoom_InOtherRoom
                 this.dialog.getComponent("dialog").setMessage("正在其他房间对局，是否回去？").
                     setPositiveButton(function () {
