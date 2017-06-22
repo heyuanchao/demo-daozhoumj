@@ -3,7 +3,7 @@ var textDecoder = require("text-encoding").TextDecoder
 window.decoder = new textDecoder("utf-8")
 
 // window.WSAddr = "ws://119.29.250.181:3654"
-window.WSAddr = "ws://192.168.1.33:3654"
+window.WSAddr = "ws://192.168.1.168:3654"
 window.ws = null
 window.initWebSocket = function () {
     if (ws != null) {
@@ -25,7 +25,16 @@ window.initWebSocket = function () {
         }
 
         if (result.S2C_Login) {
-            setUserInfo(result.S2C_Login)
+            let obj = result.S2C_Login
+            userInfo.accountID = obj.AccountID
+            userInfo.nickname = obj.Nickname
+            userInfo.headimgurl = obj.Headimgurl
+            userInfo.sex = obj.Sex
+            userInfo.anotherLogin = obj.AnotherLogin
+            userInfo.anotherRoom = obj.AnotherRoom
+
+            localStorageSetItem("token", obj.Token)
+            localStorageSetItem("username", obj.Username)
         } else if (result.S2C_EnterRoom) {
             let obj = result.S2C_EnterRoom
             if (obj.Error === 0) { // S2C_EnterRoom_OK
@@ -102,14 +111,6 @@ window.sendCreateRunJinRoom = function () {
     })
 }
 
-window.setUserInfo = function (obj) {
-    userInfo.accountID = obj.AccountID
-    userInfo.nickname = obj.Nickname
-    userInfo.headimgurl = obj.Headimgurl
-    userInfo.sex = obj.Sex
-    userInfo.anotherLogin = obj.AnotherLogin
-    userInfo.anotherRoom = obj.AnotherRoom
-
-    localStorageSetItem("token", obj.Token)
-    localStorageSetItem("username", obj.Username)
+window.sendEnterRoom = function (number) {
+    sendJsonObject({ C2S_EnterRoom: { roomNumber: number } })
 }

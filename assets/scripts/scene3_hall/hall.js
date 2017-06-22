@@ -4,6 +4,7 @@ cc.Class({
     properties: {
         dialogPrefab: cc.Prefab,
         settingPrefab: cc.Prefab,
+        loadingPrefab: cc.Prefab,
         loading2Prefab: cc.Prefab,
         avatar: cc.Sprite,
         nickname: cc.Label,
@@ -22,6 +23,9 @@ cc.Class({
         this.setting = cc.instantiate(this.settingPrefab)
         this.node.addChild(this.setting)
 
+        this.loading = cc.instantiate(this.loadingPrefab)
+        this.node.addChild(this.loading)
+
         this.loading2 = cc.instantiate(this.loading2Prefab)
         this.node.addChild(this.loading2)
 
@@ -30,6 +34,9 @@ cc.Class({
 
         this.enterRoom = cc.find("Canvas/bg/enter_room")
         this.enterRoomFrame = cc.find("Canvas/bg/enter_room/frame")
+
+        this.roomNumber = cc.find("Canvas/bg/enter_room/frame/input/room_number").getComponent(cc.Label)
+        this.roomNumberPlaceHolder = cc.find("Canvas/bg/enter_room/frame/input/place_holder")
 
         this.loadUserInfo()
 
@@ -177,6 +184,8 @@ cc.Class({
 
             self.enterRoom.active = true
             self.enterRoomFrame.runAction(cc.sequence(cc.scaleTo(0.1, 1.1), cc.scaleTo(0.1, 0.9), cc.scaleTo(0.1, 1)))
+
+            self.onKeyPressed(null, "reset")
         })))
     },
 
@@ -189,8 +198,56 @@ cc.Class({
         })))
     },
 
+    onKeyPressed: function (event, customEventData) {
+        if (customEventData == "reset") {
+            if (this.roomNumber.node.active) {
+                this.roomNumber.node.active = false
+                this.roomNumberPlaceHolder.active = true
+                this.roomNumber.string = ""
+            }
+
+            return
+        }
+
+        if (customEventData == "delete") {
+            if (this.roomNumberPlaceHolder.active) {
+                return
+            }
+
+            this.roomNumber.string = this.roomNumber.string.substr(0, this.roomNumber.string.length - 1)
+            if (this.roomNumber.string.length == 0) {
+                this.roomNumber.node.active = false
+                this.roomNumberPlaceHolder.active = true
+            }
+
+            return
+        }
+
+        if (this.roomNumberPlaceHolder.active) {
+            this.roomNumber.node.active = true
+            this.roomNumberPlaceHolder.active = false
+            this.roomNumber.string = ""
+        }
+
+        if (this.roomNumber.string.length == 6) {
+            return
+        }
+
+        this.roomNumber.string += customEventData
+        if (this.roomNumber.string.length == 6) {
+            this.enterRoom.active = false
+            this.loading.getComponent("loading").show()
+
+            let self = this
+            this.node.runAction(cc.sequence(cc.delayTime(1), cc.callFunc(function () {
+                sendEnterRoom(self.roomNumber.string)
+            })))
+        }
+    },
+
     onResult(result) {
         cc.log(result)
+        this.loading.getComponent("loading").hide()
         this.loading2.getComponent("loading2").hide()
 
         if (result.S2C_Login) {
@@ -250,16 +307,22 @@ cc.Class({
             if (result.S2C_EnterRoom.Error === 0) { // S2C_EnterRoom_OK
                 loadScene(room)
             } else if (result.S2C_EnterRoom.Error === 1) { // S2C_EnterRoom_NotCreated
-                this.dialog.getComponent("dialog").show('房间：' + result.S2C_EnterRoom.RoomNumber + ' 未创建', 1)
+                this.dialog.getComponent("dialog").setMessage("房间: " + result.S2C_EnterRoom.RoomNumber + " 未创建").show()
             } else if (result.S2C_EnterRoom.Error === 2) { // S2C_EnterRoom_NotAllowBystander
-                this.dialog.getComponent("dialog").show('房间：' + result.S2C_EnterRoom.RoomNumber + ' 不允许旁观', 1)
+                this.dialog.getComponent("dialog").setMessage("房间: " + result.S2C_EnterRoom.RoomNumber + " 不允许旁观").show()
             } else if (result.S2C_EnterRoom.Error === 3) { // S2C_EnterRoom_InOtherRoom
                 this.dialog.getComponent("dialog").setMessage("正在其他房间对局，是否回去？").
                     setPositiveButton(function () {
 
                     }).show()
             } else if (result.S2C_EnterRoom.Error === 4) { // S2C_EnterRoom_Unknown
-                this.dialog.getComponent("dialog").setMessage("进入房间：" + result.S2C_EnterRoom.RoomNumber + " 出错，请稍后重试").
+                let msg = "进入房间出错，请稍后重试"
+                let roomNumber = result.S2C_EnterRoom.RoomNumber
+                if (roomNumber) {
+                    msg = "进入房间：" + roomNumber + " 出错，请稍后重试"
+                }
+                
+                this.dialog.getComponent("dialog").setMessage(msg).
                     setPositiveButton(function () {
 
                     }).show()
