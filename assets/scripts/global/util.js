@@ -57,25 +57,14 @@ window.trim = function (str, s) {
 }
 
 window.playEffect = function (audioName) {
-    let effectOn = true
-    if (effectOn) {
+    let effectOn = cc.sys.localStorage.getItem("effectOn")
+    if (effectOn == "on") {
         let audio = cc.url.raw("resources/audio/" + audioName)
         cc.audioEngine.play(audio, false, 1)
     }
 }
 
-window.loadScene = function (sceneName) {
-    cc.director.loadScene(sceneName)
-}
-
-window.localStorageSetItem = function(itemName, item) {
-    return cc.sys.localStorage.setItem(itemName, item)
-}
-
-window.localStorageGetItem = function(itemName) {
-    return cc.sys.localStorage.getItem(itemName)
-}
-
-window.localStorageRemoveItem = function(itemName) {
-    cc.sys.localStorage.removeItem(itemName)
-}
+// cc.director.loadScene(sceneName)
+// cc.sys.localStorage.setItem(itemName, item)
+// cc.sys.localStorage.getItem(itemName)
+// cc.sys.localStorage.removeItem(itemName)

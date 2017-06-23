@@ -5,11 +5,27 @@ cc.Class({
         frame: cc.Node,
         btn_switch: cc.Button,
         btn_disband: cc.Button,
+        toggle_music: cc.Toggle,        
+        toggle_effect: cc.Toggle,
     },
 
     // use this for initialization
     onLoad: function () {
         this.node.active = false
+
+        let musicOn = cc.sys.localStorage.getItem("musicOn")
+        if (musicOn == "on") {
+            this.toggle_music.isChecked = true
+        } else if (musicOn == "off") {
+            this.toggle_music.isChecked = false
+        }
+
+        let effectOn = cc.sys.localStorage.getItem("effectOn")
+        if (effectOn == "on") {
+            this.toggle_effect.isChecked = true
+        } else if (effectOn == "off") {
+            this.toggle_effect.isChecked = false
+        }
     },
 
     playOkEffect: function () {
@@ -20,8 +36,24 @@ cc.Class({
         playEffect("SpecCancelOrReturn.wav")
     },
 
+    togglePlayMusic: function () {
+        if (this.toggle_music.isChecked) {
+            cc.sys.localStorage.setItem("musicOn", "on")
+        } else {
+            cc.sys.localStorage.setItem("musicOn", "off")
+        }
+    },
+
+    togglePlayEffect: function () {
+        if (this.toggle_effect.isChecked) {
+            cc.sys.localStorage.setItem("effectOn", "on")
+        } else {
+            cc.sys.localStorage.setItem("effectOn", "off")
+        }
+    },
+
     switchAccount: function () {
-        localStorageRemoveItem("token")
+        cc.sys.localStorage.removeItem("token")
         cc.director.loadScene(login, function () {
             closeWebSocket()
         })

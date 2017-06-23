@@ -44,8 +44,8 @@ cc.Class({
                         initWebSocket()
                     })));
                 }).setNegativeButton(function () {
-                    localStorageRemoveItem("token")
-                    loadScene(login)
+                    cc.sys.localStorage.removeItem("token")
+                    cc.director.loadScene(login)
                 }).show()
         }, this)
 
@@ -140,7 +140,7 @@ cc.Class({
         if (result.S2C_Login) {
             cc.log('room another room: ' + userInfo.anotherRoom)
             if (userInfo.anotherRoom) {
-                sendEnterRoom()
+                sendEnterRoom("")
             } else {
                 this.dialog.getComponent("dialog").setMessage("您已离开房间，即将返回大厅").
                     setPositiveButton(function () {
@@ -151,29 +151,29 @@ cc.Class({
             if (result.S2C_Close.Error === 1) { // S2C_Close_LoginRepeated
                 this.dialog.getComponent("dialog").setMessage("您的账号在其他设备上线，非本人操作请注意修改密码").
                     setPositiveButton(function () {
-                        localStorageRemoveItem("token")
+                        cc.sys.localStorage.removeItem("token")
                         cc.director.loadScene(login)
                     }).show()
             } else if (result.S2C_Close.Error === 2) { // S2C_Close_InnerError
-                localStorageRemoveItem("token")
+                cc.sys.localStorage.removeItem("token")
                 this.dialog.getComponent("dialog").setMessage("登录出错，请您重新登录").
                     setPositiveButton(function () {
                         cc.director.loadScene(login)
                     }).show()
             } else if (result.S2C_Close.Error === 3) { // S2C_Close_TokenInvalid
-                localStorageRemoveItem("token")
+                cc.sys.localStorage.removeItem("token")
                 this.dialog.getComponent("dialog").setMessage("登录态失效，请您重新登录").
                     setPositiveButton(function () {
                         cc.director.loadScene(login)
                     }).show()
             } else if (result.S2C_Close.Error === 4) { // S2C_Close_UnionidInvalid
-                localStorageRemoveItem("token")
+                cc.sys.localStorage.removeItem("token")
                 this.dialog.getComponent("dialog").setMessage("登录出错，微信ID无效").
                     setPositiveButton(function () {
                         cc.director.loadScene(login)
                     }).show()
             } else if (result.S2C_Close.Error === 5) { // S2C_Close_UsernameInvalid
-                localStorageRemoveItem("token")
+                cc.sys.localStorage.removeItem("token")
                 this.dialog.getComponent("dialog").setMessage("登录出错，用户名无效").
                     setPositiveButton(function () {
                         cc.director.loadScene(login)
@@ -181,7 +181,7 @@ cc.Class({
             }
         } else if (result.S2C_EnterRoom) {
             if (result.S2C_EnterRoom.Error === 0) { // S2C_EnterRoom_OK
-                loadScene(room)
+                cc.director.loadScene(room)
             } else if (result.S2C_EnterRoom.Error === 1) { // S2C_EnterRoom_NotCreated
                 this.dialog.getComponent("dialog").show('房间：' + result.S2C_EnterRoom.RoomNumber + ' 未创建', 1)
             } else if (result.S2C_EnterRoom.Error === 2) { // S2C_EnterRoom_NotAllowBystander

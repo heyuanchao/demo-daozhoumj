@@ -2,23 +2,24 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        // foo: {
-        //    default: null,      // The default value will be used only when the component attaching
-        //                           to a node for the first time
-        //    url: cc.Texture2D,  // optional, default is typeof default
-        //    serializable: true, // optional, default is true
-        //    visible: true,      // optional, default is true
-        //    displayName: 'Foo', // optional
-        //    readonly: false,    // optional, default is false
-        // },
-        // ...
+
     },
 
     // use this for initialization
     onLoad: function () {
+        let musicOn = cc.sys.localStorage.getItem("musicOn")
+        if (musicOn == null) {
+            cc.sys.localStorage.setItem("musicOn", "on")
+        }
+
+        let effectOn = cc.sys.localStorage.getItem("effectOn")
+        if (effectOn == null) {
+            cc.sys.localStorage.setItem("effectOn", "on")
+        }
+
         this.node.runAction(cc.sequence(cc.delayTime(2), cc.callFunc(function () {
-            loadScene(login)
-        })));
+            cc.director.loadScene(login)
+        })))
     },
 
     loadScene: function(event, sceneName) {
