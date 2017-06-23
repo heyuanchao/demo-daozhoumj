@@ -4,6 +4,7 @@ cc.Class({
     properties: {
         frame: cc.Node,
         btn_switch: cc.Button,
+        btn_disband: cc.Button,
     },
 
     // use this for initialization
@@ -28,6 +29,16 @@ cc.Class({
 
     hideSwitchAccount: function () {
         this.btn_switch.node.active = false
+
+        return this
+    },
+
+    disbandRoom: function () {
+
+    },
+
+    hideDisbandRoom: function () {
+        this.btn_disband.node.active = false
 
         return this
     },

@@ -7,8 +7,10 @@
     "anysdk"
   ],
   "inlineSpriteFrames": true,
+  "inlineSpriteFrames_native": false,
   "mergeStartScene": false,
   "oauthLoginServer": "",
+  "optimizeHotUpdate": false,
   "orientation": {
     "landscapeLeft": true,
     "landscapeRight": true,

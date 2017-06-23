@@ -147,7 +147,7 @@ cc.Class({
     },
 
     showSetting: function () {
-        this.setting.getComponent("setting").show()
+        this.setting.getComponent("setting").hideDisbandRoom().show()
     },
 
     showCreateRoom: function () {

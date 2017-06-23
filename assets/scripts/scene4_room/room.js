@@ -10,6 +10,7 @@ cc.Class({
         nickname: cc.Label,
         btnSetUp: cc.Button,
         btnInviteFriend: cc.Button,
+        btnDisbandRoom: cc.Button,
     },
 
     // use this for initialization
@@ -84,6 +85,7 @@ cc.Class({
     setButtonsEnabled: function (enabled) {
         this.btnSetUp.enabled = enabled
         this.btnInviteFriend.enabled = enabled
+        this.btnDisbandRoom.enabled = enabled
     },
 
     reconnect: function () {
