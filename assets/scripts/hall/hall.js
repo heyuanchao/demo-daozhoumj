@@ -146,6 +146,10 @@ cc.Class({
         playEffect("SpecCancelOrReturn.wav")
     },
 
+    playDisableEffect: function () {
+        playEffect("SpecDisable.wav")
+    },
+
     showSetting: function () {
         this.setting.getComponent("setting").hideDisbandRoom().show()
     },
@@ -175,6 +179,10 @@ cc.Class({
 
     createRunJinRoom: function () {
         sendCreateRunJinRoom()
+    },
+
+    createDaoZhouRoom: function () {
+
     },
 
     showEnterRoom: function () {

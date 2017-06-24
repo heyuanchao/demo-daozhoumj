@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "6b7de312-d682-4780-bd94-28083f9db30d",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "create_daozhou_room_frame": {
+      "ver": "1.0.3",
+      "uuid": "47781b84-0ced-4b7d-9be3-459f108ff015",
+      "rawTextureUuid": "6b7de312-d682-4780-bd94-28083f9db30d",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 956,
+      "height": 613,
+      "rawWidth": 956,
+      "rawHeight": 613,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
