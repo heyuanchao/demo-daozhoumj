@@ -98,25 +98,25 @@ cc.Class({
         this.user3 = cc.find("Canvas/bg/user3")
         this.user4 = cc.find("Canvas/bg/user4")
 
-        this.user1_nickname = cc.find("Canvas/bg/user1/bg/nickname").getComponent(cc.Label)
-        this.user2_nickname = cc.find("Canvas/bg/user2/bg/nickname").getComponent(cc.Label)
-        this.user3_nickname = cc.find("Canvas/bg/user3/bg/nickname").getComponent(cc.Label)
-        this.user4_nickname = cc.find("Canvas/bg/user4/bg/nickname").getComponent(cc.Label)
+        this.user1Nickname = cc.find("Canvas/bg/user1/bg/nickname").getComponent(cc.Label)
+        this.user2Nickname = cc.find("Canvas/bg/user2/bg/nickname").getComponent(cc.Label)
+        this.user3Nickname = cc.find("Canvas/bg/user3/bg/nickname").getComponent(cc.Label)
+        this.user4Nickname = cc.find("Canvas/bg/user4/bg/nickname").getComponent(cc.Label)
 
-        this.user1_avatar = cc.find("Canvas/bg/user1/bg/avatar_mask/avatar").getComponent(cc.Sprite)
-        this.user2_avatar = cc.find("Canvas/bg/user2/bg/avatar_mask/avatar").getComponent(cc.Sprite)
-        this.user3_avatar = cc.find("Canvas/bg/user3/bg/avatar_mask/avatar").getComponent(cc.Sprite)
-        this.user4_avatar = cc.find("Canvas/bg/user4/bg/avatar_mask/avatar").getComponent(cc.Sprite)
+        this.user1Avatar = cc.find("Canvas/bg/user1/bg/avatar_mask/avatar").getComponent(cc.Sprite)
+        this.user2Avatar = cc.find("Canvas/bg/user2/bg/avatar_mask/avatar").getComponent(cc.Sprite)
+        this.user3Avatar = cc.find("Canvas/bg/user3/bg/avatar_mask/avatar").getComponent(cc.Sprite)
+        this.user4Avatar = cc.find("Canvas/bg/user4/bg/avatar_mask/avatar").getComponent(cc.Sprite)
 
-        this.usre1_owner = cc.find("Canvas/bg/user1/bg/owner")
-        this.usre2_owner = cc.find("Canvas/bg/user2/bg/owner")
-        this.usre3_owner = cc.find("Canvas/bg/user3/bg/owner")
-        this.usre4_owner = cc.find("Canvas/bg/user4/bg/owner")
+        this.user1Owner = cc.find("Canvas/bg/user1/bg/owner")
+        this.user2Owner = cc.find("Canvas/bg/user2/bg/owner")
+        this.user3Owner = cc.find("Canvas/bg/user3/bg/owner")
+        this.user4Owner = cc.find("Canvas/bg/user4/bg/owner")
 
-        this.user1_banker = cc.find("Canvas/bg/user1/bg/banker")
-        this.user2_banker = cc.find("Canvas/bg/user2/bg/banker")
-        this.user3_banker = cc.find("Canvas/bg/user3/bg/banker")
-        this.user4_banker = cc.find("Canvas/bg/user4/bg/banker")
+        this.user1Banker = cc.find("Canvas/bg/user1/bg/banker")
+        this.user2Banker = cc.find("Canvas/bg/user2/bg/banker")
+        this.user3Banker = cc.find("Canvas/bg/user3/bg/banker")
+        this.user4Banker = cc.find("Canvas/bg/user4/bg/banker")
     },
 
     setButtonsEnabled: function (enabled) {
@@ -247,37 +247,40 @@ cc.Class({
 
             let pos = obj.Position
             let owner = obj.Owner
-            let accID = obj.AccountID
+            let accountID = obj.AccountID
 			let nickname = obj.Nickname
 			let headimgurl = obj.Headimgurl
 			let sex = obj.Sex
             let userReady = obj.UserReady
 
-            cc.log('加入, 位置:', pos, owner, accID, nickname, sex, userReady)
+            cc.log('加入, 位置:', pos, owner, accoutID, nickname, sex, userReady)
 
             if (pos == userInfo.position) {
                 this.user1.active = true
-                this.loadUserInfo(this.user1_nickname, nickname, this.user1_avatar, headimgurl)
+                this.loadUserInfo(this.user1Nickname, nickname, this.user1Avatar, headimgurl)
                 if (owner) {
-                    this.usre1_owner.active = true
+                    this.user1Owner.active = true
                 }
             } else if (pos == (userInfo.position + 1) % roomInfo.maxPlayers) {
+                setUserInfo(user2Info, obj)
                 this.user2.active = true
-                this.loadUserInfo(this.user2_nickname, nickname, this.user2_avatar, headimgurl)
+                this.loadUserInfo(this.user2Nickname, nickname, this.user2Avatar, headimgurl)
                 if (owner) {
-                    this.usre2_owner.active = true
+                    this.user2Owner.active = true
                 }
             } else if (pos == (userInfo.position + 2) % roomInfo.maxPlayers) {
+                setUserInfo(user3Info, obj)
                 this.user3.active = true
-                this.loadUserInfo(this.user3_nickname, nickname, this.user3_avatar, headimgurl)
+                this.loadUserInfo(this.user3Nickname, nickname, this.user3Avatar, headimgurl)
                 if (owner) {
-                    this.usre3_owner.active = true
+                    this.user3Owner.active = true
                 }
             } else if (pos == (userInfo.position + 3) % roomInfo.maxPlayers) {
+                setUserInfo(user4Info, obj)
                 this.user4.active = true
-                this.loadUserInfo(this.user4_nickname, nickname, this.user4_avatar, headimgurl)
+                this.loadUserInfo(this.user4Nickname, nickname, this.user4Avatar, headimgurl)
                 if (owner) {
-                    this.usre4_owner.active = true
+                    this.user4Owner.active = true
                 }
             }
         }
