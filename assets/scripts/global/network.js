@@ -111,6 +111,14 @@ window.sendCreateRunJinRoom = function () {
     })
 }
 
+window.sendCreateDaoZhouRoom = function () {
+    sendJsonObject({
+        C2S_CreateDaoZhouRoom: {
+
+        }
+    })
+}
+
 window.sendEnterRoom = function (number) {
     sendJsonObject({ C2S_EnterRoom: { roomNumber: number } })
 }

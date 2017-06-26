@@ -182,7 +182,7 @@ cc.Class({
     },
 
     createDaoZhouRoom: function () {
-
+        sendCreateDaoZhouRoom()
     },
 
     showEnterRoom: function () {
