@@ -15,6 +15,8 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
+        this.initializeVariable()
+
         this.dialog = cc.instantiate(this.dialogPrefab)
         this.node.addChild(this.dialog)
 
@@ -24,7 +26,9 @@ cc.Class({
         this.loading2 = cc.instantiate(this.loading2Prefab)
         this.node.addChild(this.loading2)
 
-        this.loadRoomInfo()
+        if (roomInfo.number) {
+            this.roomNumber.string += roomInfo.number
+        }
 
         Notification.on("onopen", function () {
             sendTokenLogin()
@@ -69,6 +73,12 @@ cc.Class({
                 userInfo.anotherLogin = false
                 this.dialog.getComponent("dialog").setMessage("您的账号刚在其他设备上线，请您检查账号安全").show()
             }
+
+            this.user1.active = false
+            this.user2.active = false
+            this.user3.active = false
+            this.user4.active = false
+            sendGetPlayerInfo()
         }
     },
 
@@ -80,6 +90,33 @@ cc.Class({
 
         Notification.offType("enable")
         Notification.offType("disable")
+    },
+
+    initializeVariable: function () {
+        this.user1 = cc.find("Canvas/bg/user1")
+        this.user2 = cc.find("Canvas/bg/user2")
+        this.user3 = cc.find("Canvas/bg/user3")
+        this.user4 = cc.find("Canvas/bg/user4")
+
+        this.user1_nickname = cc.find("Canvas/bg/user1/bg/nickname").getComponent(cc.Label)
+        this.user2_nickname = cc.find("Canvas/bg/user2/bg/nickname").getComponent(cc.Label)
+        this.user3_nickname = cc.find("Canvas/bg/user3/bg/nickname").getComponent(cc.Label)
+        this.user4_nickname = cc.find("Canvas/bg/user4/bg/nickname").getComponent(cc.Label)
+
+        this.user1_avatar = cc.find("Canvas/bg/user1/bg/avatar_mask/avatar").getComponent(cc.Sprite)
+        this.user2_avatar = cc.find("Canvas/bg/user2/bg/avatar_mask/avatar").getComponent(cc.Sprite)
+        this.user3_avatar = cc.find("Canvas/bg/user3/bg/avatar_mask/avatar").getComponent(cc.Sprite)
+        this.user4_avatar = cc.find("Canvas/bg/user4/bg/avatar_mask/avatar").getComponent(cc.Sprite)
+
+        this.usre1_owner = cc.find("Canvas/bg/user1/bg/owner")
+        this.usre2_owner = cc.find("Canvas/bg/user2/bg/owner")
+        this.usre3_owner = cc.find("Canvas/bg/user3/bg/owner")
+        this.usre4_owner = cc.find("Canvas/bg/user4/bg/owner")
+
+        this.user1_banker = cc.find("Canvas/bg/user1/bg/banker")
+        this.user2_banker = cc.find("Canvas/bg/user2/bg/banker")
+        this.user3_banker = cc.find("Canvas/bg/user3/bg/banker")
+        this.user4_banker = cc.find("Canvas/bg/user4/bg/banker")
     },
 
     setButtonsEnabled: function (enabled) {
@@ -98,25 +135,20 @@ cc.Class({
         initWebSocket()
     },
 
-    loadRoomInfo: function () {
-        if (roomInfo.number) {
-            this.roomNumber.string += roomInfo.number
+    loadUserInfo: function (nicknameLabel, nickname, avatarSprite, headimgurl) {
+        if (nickname) {
+            nicknameLabel.string = nickname
         }
 
-        if (userInfo.nickname) {
-            this.nickname.string = userInfo.nickname
+        if (!headimgurl) {
+            headimgurl = "http://www.huafeiqipai.com/img/avatar.jpg"
         }
 
-        if (!userInfo.headimgurl) {
-            userInfo.headimgurl = "http://www.huafeiqipai.com/img/avatar.jpg"
-        }
-
-        let self = this
-        cc.loader.load({ url: userInfo.headimgurl, type: "jpg" }, function (err, texture) {
+        cc.loader.load({ url: headimgurl, type: "jpg" }, function (err, texture) {
             if (err) {
                 cc.log(err)
             } else {
-                self.avatar.spriteFrame = new cc.SpriteFrame(texture)
+                avatarSprite.spriteFrame = new cc.SpriteFrame(texture)
             }
         })
     },
@@ -196,6 +228,57 @@ cc.Class({
                     setPositiveButton(function () {
 
                     }).show()
+            }
+        } else if (result.S2C_ExitRoom) {
+            let obj = result.S2C_ExitRoom
+
+            let pos = obj.Position
+            if (pos == userInfo.position) {
+                cc.director.loadScene(hall)
+            } else if (pos == (userInfo.position + 1) % roomInfo.maxPlayers) {
+                this.user2.active = false
+            } else if (pos == (userInfo.position + 2) % roomInfo.maxPlayers) {
+                this.user3.active = false
+            } else if (pos == (userInfo.position + 3) % roomInfo.maxPlayers) {
+                this.user4.active = false
+            }
+        } else if (result.S2C_GetPlayerInfo) {
+            let obj = result.S2C_GetPlayerInfo
+
+            let pos = obj.Position
+            let owner = obj.Owner
+            let accID = obj.AccountID
+			let nickname = obj.Nickname
+			let headimgurl = obj.Headimgurl
+			let sex = obj.Sex
+            let userReady = obj.UserReady
+
+            cc.log('加入, 位置:', pos, owner, accID, nickname, sex, userReady)
+
+            if (pos == userInfo.position) {
+                this.user1.active = true
+                this.loadUserInfo(this.user1_nickname, nickname, this.user1_avatar, headimgurl)
+                if (owner) {
+                    this.usre1_owner.active = true
+                }
+            } else if (pos == (userInfo.position + 1) % roomInfo.maxPlayers) {
+                this.user2.active = true
+                this.loadUserInfo(this.user2_nickname, nickname, this.user2_avatar, headimgurl)
+                if (owner) {
+                    this.usre2_owner.active = true
+                }
+            } else if (pos == (userInfo.position + 2) % roomInfo.maxPlayers) {
+                this.user3.active = true
+                this.loadUserInfo(this.user3_nickname, nickname, this.user3_avatar, headimgurl)
+                if (owner) {
+                    this.usre3_owner.active = true
+                }
+            } else if (pos == (userInfo.position + 3) % roomInfo.maxPlayers) {
+                this.user4.active = true
+                this.loadUserInfo(this.user4_nickname, nickname, this.user4_avatar, headimgurl)
+                if (owner) {
+                    this.usre4_owner.active = true
+                }
             }
         }
     },

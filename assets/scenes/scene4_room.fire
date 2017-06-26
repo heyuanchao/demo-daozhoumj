@@ -711,7 +711,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "user_info1",
+    "_name": "user1",
     "_objFlags": 0,
     "_parent": {
       "__id__": 3
@@ -1311,7 +1311,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "user_info2",
+    "_name": "user2",
     "_objFlags": 0,
     "_parent": {
       "__id__": 3
@@ -1911,7 +1911,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "user_info3",
+    "_name": "user3",
     "_objFlags": 0,
     "_parent": {
       "__id__": 3
@@ -2511,7 +2511,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "user_info4",
+    "_name": "user4",
     "_objFlags": 0,
     "_parent": {
       "__id__": 3

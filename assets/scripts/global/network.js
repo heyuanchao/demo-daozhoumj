@@ -40,6 +40,7 @@ window.initWebSocket = function () {
             if (obj.Error === 0) { // S2C_EnterRoom_OK
                 roomInfo.number = obj.RoomNumber
                 roomInfo.desc = obj.RoomDesc
+                roomInfo.maxPlayers = obj.MaxPlayers
                 roomInfo.processing = obj.GameProcessing
 
                 userInfo.position = obj.Position
@@ -121,4 +122,8 @@ window.sendCreateDaoZhouRoom = function () {
 
 window.sendEnterRoom = function (number) {
     sendJsonObject({ C2S_EnterRoom: { roomNumber: number } })
+}
+
+window.sendGetPlayerInfo = function () {
+    sendJsonObject({ C2S_GetPlayerInfo: {} })
 }

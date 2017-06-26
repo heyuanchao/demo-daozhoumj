@@ -39,7 +39,7 @@ import android.content.res.Configuration;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
-import com.youxibi.mj.R;
+import com.youxibi.daozhoumjdemo.R;
 
 public class AppActivity extends Cocos2dxActivity {
     public static AppActivity app = null;

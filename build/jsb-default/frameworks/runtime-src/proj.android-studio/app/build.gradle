@@ -7,7 +7,7 @@ android {
     buildToolsVersion "25.0.0"
 
     defaultConfig {
-        applicationId "com.youxibi.mj"
+        applicationId "com.youxibi.daozhoumjdemo"
         minSdkVersion 10
         targetSdkVersion PROP_TARGET_SDK_VERSION
         versionCode 1

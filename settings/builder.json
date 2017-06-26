@@ -17,10 +17,10 @@
     "portrait": false,
     "upsideDown": false
   },
-  "packageName": "com.youxibi.mj",
+  "packageName": "com.youxibi.daozhoumjdemo",
   "privateKey": "",
   "renderMode": "0",
   "startScene": "ac293287-b2f2-4587-87c6-5659a816287c",
-  "title": "demo_mj",
+  "title": "demo_daozhoumj",
   "webOrientation": "auto"
 }
