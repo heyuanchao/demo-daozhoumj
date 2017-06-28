@@ -68,8 +68,16 @@ window.closeWebSocket = function () {
     if (ws) ws.close()
 }
 
+window.isConnected = function () {
+    if (ws && ws.readyState == WebSocket.OPEN) {
+        return true
+    }
+
+    return false
+}
+
 window.sendJsonObject = function (obj) {
-    if (ws && ws.readyState == WebSocket.OPEN) ws.send(JSON.stringify(obj))
+    if (isConnected()) ws.send(JSON.stringify(obj))
 }
 
 window.sendWeChatLogin = function () {

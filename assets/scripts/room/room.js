@@ -25,10 +25,6 @@ cc.Class({
         this.loading2 = cc.instantiate(this.loading2Prefab)
         this.node.addChild(this.loading2)
 
-        if (roomInfo.number) {
-            this.roomNumber.string += roomInfo.number
-        }
-
         Notification.on("onopen", function () {
             sendTokenLogin()
         }, this)
@@ -65,9 +61,11 @@ cc.Class({
 
     start: function () {
         cc.log("room start")
-        if (ws === null) {
-            this.reconnect()
-        } else {
+        if (isConnected()) {
+            if (roomInfo.number) {
+                this.roomNumber.string += roomInfo.number
+            }
+
             if (userInfo.anotherLogin) {
                 userInfo.anotherLogin = false
                 this.dialog.getComponent("dialog").setMessage("您的账号刚在其他设备上线，请您检查账号安全").show()
@@ -78,6 +76,8 @@ cc.Class({
             this.user3.active = false
             this.user4.active = false
             sendGetPlayerInfo()
+        } else {
+            this.reconnect()
         }
     },
 
@@ -163,9 +163,9 @@ cc.Class({
 
     showSetting: function () {
         if (userInfo.owner) {
-             this.setting.getComponent("setting").hideSwitchAccount().show()
+            this.setting.getComponent("setting").hideSwitchAccount().show()
         } else {
-             this.setting.getComponent("setting").hideSwitchAccount().hideDisbandRoom().show()
+            this.setting.getComponent("setting").hideSwitchAccount().hideDisbandRoom().show()
         }
     },
 
@@ -260,9 +260,9 @@ cc.Class({
             let pos = obj.Position
             let owner = obj.Owner
             let accountID = obj.AccountID
-			let nickname = obj.Nickname
-			let headimgurl = obj.Headimgurl
-			let sex = obj.Sex
+            let nickname = obj.Nickname
+            let headimgurl = obj.Headimgurl
+            let sex = obj.Sex
             let userReady = obj.UserReady
 
             cc.log('加入, 位置:', pos, owner, accountID, nickname, sex, userReady)

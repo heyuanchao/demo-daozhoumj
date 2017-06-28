@@ -38,10 +38,6 @@ cc.Class({
         this.roomNumber = cc.find("Canvas/bg/enter_room/frame/input/room_number").getComponent(cc.Label)
         this.roomNumberPlaceHolder = cc.find("Canvas/bg/enter_room/frame/input/place_holder")
 
-        if (ws && ws.readyState == WebSocket.OPEN) {
-            this.loadUserInfo()
-        }
-
         Notification.on("onopen", function () {
             sendTokenLogin()
         }, this)
@@ -80,13 +76,15 @@ cc.Class({
 
     start: function () {
         cc.log("hall start")
-        if (ws === null) {
-            this.reconnect()
-        } else {
+        if (isConnected()) {
+            this.loadUserInfo()
+
             if (userInfo.anotherLogin) {
                 userInfo.anotherLogin = false
                 this.dialog.getComponent("dialog").setMessage("您的账号刚在其他设备上线，请您检查账号安全").show()
             }
+        } else {
+            this.reconnect()
         }
     },
 
