@@ -26,10 +26,8 @@ window.initWebSocket = function () {
 
         if (result.S2C_Login) {
             let obj = result.S2C_Login
-            userInfo.accountID = obj.AccountID
-            userInfo.nickname = obj.Nickname
-            userInfo.headimgurl = obj.Headimgurl
-            userInfo.sex = obj.Sex
+            
+            setUserInfo(userInfo, obj)
             userInfo.anotherLogin = obj.AnotherLogin
             userInfo.anotherRoom = obj.AnotherRoom
 
@@ -126,4 +124,8 @@ window.sendEnterRoom = function (number) {
 
 window.sendGetPlayerInfo = function () {
     sendJsonObject({ C2S_GetPlayerInfo: {} })
+}
+
+window.sendExitOrDisbandRoom = function () {
+    sendJsonObject({ C2S_ExitOrDisbandRoom: {} })
 }

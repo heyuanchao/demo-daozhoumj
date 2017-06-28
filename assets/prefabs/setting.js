@@ -66,7 +66,7 @@ cc.Class({
     },
 
     disbandRoom: function () {
-
+        sendExitOrDisbandRoom()
     },
 
     hideDisbandRoom: function () {

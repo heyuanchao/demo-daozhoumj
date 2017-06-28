@@ -38,7 +38,9 @@ cc.Class({
         this.roomNumber = cc.find("Canvas/bg/enter_room/frame/input/room_number").getComponent(cc.Label)
         this.roomNumberPlaceHolder = cc.find("Canvas/bg/enter_room/frame/input/place_holder")
 
-        this.loadUserInfo()
+        if (ws && ws.readyState == WebSocket.OPEN) {
+            this.loadUserInfo()
+        }
 
         Notification.on("onopen", function () {
             sendTokenLogin()

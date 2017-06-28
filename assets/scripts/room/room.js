@@ -6,11 +6,10 @@ cc.Class({
         settingPrefab: cc.Prefab,
         loading2Prefab: cc.Prefab,
         roomNumber: cc.Label,
-        avatar: cc.Sprite,
-        nickname: cc.Label,
         btnSetUp: cc.Button,
         btnInviteFriend: cc.Button,
         btnDisbandRoom: cc.Button,
+        btnExitRoom: cc.Button,
     },
 
     // use this for initialization
@@ -123,6 +122,7 @@ cc.Class({
         this.btnSetUp.enabled = enabled
         this.btnInviteFriend.enabled = enabled
         this.btnDisbandRoom.enabled = enabled
+        this.btnExitRoom.enabled = enabled
     },
 
     reconnect: function () {
@@ -162,7 +162,19 @@ cc.Class({
     },
 
     showSetting: function () {
-        this.setting.getComponent("setting").hideSwitchAccount().show()
+        if (userInfo.owner) {
+             this.setting.getComponent("setting").hideSwitchAccount().show()
+        } else {
+             this.setting.getComponent("setting").hideSwitchAccount().hideDisbandRoom().show()
+        }
+    },
+
+    disbandRoom: function () {
+        sendExitOrDisbandRoom()
+    },
+
+    exitRoom: function () {
+        sendExitOrDisbandRoom()
     },
 
     onResult(result) {
@@ -215,9 +227,9 @@ cc.Class({
             if (result.S2C_EnterRoom.Error === 0) { // S2C_EnterRoom_OK
                 cc.director.loadScene(room)
             } else if (result.S2C_EnterRoom.Error === 1) { // S2C_EnterRoom_NotCreated
-                this.dialog.getComponent("dialog").show('房间：' + result.S2C_EnterRoom.RoomNumber + ' 未创建', 1)
+                this.dialog.getComponent("dialog").setMessage("房间: " + result.S2C_EnterRoom.RoomNumber + " 未创建").show()
             } else if (result.S2C_EnterRoom.Error === 2) { // S2C_EnterRoom_NotAllowBystander
-                this.dialog.getComponent("dialog").show('房间：' + result.S2C_EnterRoom.RoomNumber + ' 不允许旁观', 1)
+                this.dialog.getComponent("dialog").setMessage("房间: " + result.S2C_EnterRoom.RoomNumber + " 玩家人数已满").show()
             } else if (result.S2C_EnterRoom.Error === 3) { // S2C_EnterRoom_InOtherRoom
                 this.dialog.getComponent("dialog").setMessage("正在其他房间对局，是否回去？").
                     setPositiveButton(function () {
@@ -253,13 +265,18 @@ cc.Class({
 			let sex = obj.Sex
             let userReady = obj.UserReady
 
-            cc.log('加入, 位置:', pos, owner, accoutID, nickname, sex, userReady)
+            cc.log('加入, 位置:', pos, owner, accountID, nickname, sex, userReady)
 
             if (pos == userInfo.position) {
                 this.user1.active = true
                 this.loadUserInfo(this.user1Nickname, nickname, this.user1Avatar, headimgurl)
+
+                userInfo.owner = owner
                 if (owner) {
                     this.user1Owner.active = true
+                    this.btnDisbandRoom.node.active = true
+                } else {
+                    this.btnExitRoom.node.active = true
                 }
             } else if (pos == (userInfo.position + 1) % roomInfo.maxPlayers) {
                 setUserInfo(user2Info, obj)
@@ -282,6 +299,13 @@ cc.Class({
                 if (owner) {
                     this.user4Owner.active = true
                 }
+            }
+        } else if (result.S2C_DisbandRoom) {
+            if (result.S2C_DisbandRoom.Error === 0) { // S2C_DisbandRoom_OK
+                this.dialog.getComponent("dialog").setMessage(result.S2C_DisbandRoom.Message).
+                    setPositiveButton(function () {
+                        cc.director.loadScene(hall)
+                    }).show()
             }
         }
     },
