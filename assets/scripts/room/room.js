@@ -116,6 +116,11 @@ cc.Class({
         this.user2Banker = cc.find("Canvas/bg/user2/bg/banker")
         this.user3Banker = cc.find("Canvas/bg/user3/bg/banker")
         this.user4Banker = cc.find("Canvas/bg/user4/bg/banker")
+
+        this.user1Ready = cc.find("Canvas/bg/user1/ready_tag")
+        this.user2Ready = cc.find("Canvas/bg/user2/ready_tag")
+        this.user3Ready = cc.find("Canvas/bg/user3/ready_tag")
+        this.user4Ready = cc.find("Canvas/bg/user4/ready_tag")
     },
 
     setButtonsEnabled: function (enabled) {
@@ -263,9 +268,9 @@ cc.Class({
             let nickname = obj.Nickname
             let headimgurl = obj.Headimgurl
             let sex = obj.Sex
-            let userReady = obj.UserReady
+            let ready = obj.UserReady
 
-            cc.log('加入, 位置:', pos, owner, accountID, nickname, sex, userReady)
+            cc.log('加入, 位置:', pos, owner, accountID, nickname, sex, ready)
 
             if (pos == userInfo.position) {
                 this.user1.active = true
@@ -273,36 +278,39 @@ cc.Class({
 
                 userInfo.owner = owner
                 if (owner) {
-                    this.user1Owner.active = true
                     this.btnDisbandRoom.node.active = true
                 } else {
                     this.btnExitRoom.node.active = true
                 }
+
+                this.user1Owner.active = owner
+                this.user1Ready.active = ready
             } else if (pos == (userInfo.position + 1) % roomInfo.maxPlayers) {
                 setUserInfo(user2Info, obj)
                 this.user2.active = true
                 this.loadUserInfo(this.user2Nickname, nickname, this.user2Avatar, headimgurl)
-                if (owner) {
-                    this.user2Owner.active = true
-                }
+                
+                this.user2Owner.active = owner
+                this.user2Ready.active = ready
             } else if (pos == (userInfo.position + 2) % roomInfo.maxPlayers) {
                 setUserInfo(user3Info, obj)
                 this.user3.active = true
                 this.loadUserInfo(this.user3Nickname, nickname, this.user3Avatar, headimgurl)
-                if (owner) {
-                    this.user3Owner.active = true
-                }
+                
+                this.user3Owner.active = owner
+                this.user3Ready.active = ready
             } else if (pos == (userInfo.position + 3) % roomInfo.maxPlayers) {
                 setUserInfo(user4Info, obj)
                 this.user4.active = true
                 this.loadUserInfo(this.user4Nickname, nickname, this.user4Avatar, headimgurl)
-                if (owner) {
-                    this.user4Owner.active = true
-                }
+                
+                this.user4Owner.active = owner
+                this.user4Ready.active = ready
             }
         } else if (result.S2C_DisbandRoom) {
             if (result.S2C_DisbandRoom.Error === 0) { // S2C_DisbandRoom_OK
-                this.dialog.getComponent("dialog").setMessage(result.S2C_DisbandRoom.Message).
+                let msg = "房间: " + result.S2C_DisbandRoom.RoomNumber + " 已经被房主: " + result.S2C_DisbandRoom.OwnerNickName + "解散" 
+                this.dialog.getComponent("dialog").setMessage(msg).
                     setPositiveButton(function () {
                         cc.director.loadScene(hall)
                     }).show()
