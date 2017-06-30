@@ -363,7 +363,7 @@
       "a": 255
     },
     "duration": 0.1,
-    "zoomScale": 1.1,
+    "zoomScale": 0.9,
     "pressedSprite": null,
     "hoverSprite": null,
     "clickEvents": [
