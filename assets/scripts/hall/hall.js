@@ -62,15 +62,6 @@ cc.Class({
         }, this)
 
         Notification.on("onclose", this.reconnect, this)
-
-        Notification.on("enable", function () {
-            self.setButtonsEnabled(true)
-        })
-
-        Notification.on("disable", function () {
-            self.setButtonsEnabled(false)
-        })
-
         cc.log("hall onLoad")
     },
 
@@ -93,16 +84,6 @@ cc.Class({
         Notification.offType("onmessage")
         Notification.offType("onerror")
         Notification.offType("onclose")
-
-        Notification.offType("enable")
-        Notification.offType("disable")
-    },
-
-    setButtonsEnabled: function (enabled) {
-        this.btnCreateRoom.enabled = enabled
-        this.btnEnterRoom.enabled = enabled
-        this.btnSetUp.enabled = enabled
-        this.btnShare.enabled = enabled
     },
 
     reconnect: function () {
@@ -155,18 +136,11 @@ cc.Class({
     },
 
     showCreateRoom: function () {
-        let self = this
-        this.node.runAction(cc.sequence(cc.delayTime(0.3), cc.callFunc(function () {
-            Notification.emit("disable")
-
-            self.createRoom.active = true
-            self.createRoomFrame.runAction(cc.sequence(cc.scaleTo(0.1, 1.1), cc.scaleTo(0.1, 0.9), cc.scaleTo(0.1, 1)))
-        })))
+        this.createRoom.active = true
+        this.createRoomFrame.runAction(cc.sequence(cc.scaleTo(0.1, 1.1), cc.scaleTo(0.1, 0.9), cc.scaleTo(0.1, 1)))
     },
 
     hideCreatRoom: function () {
-        Notification.emit("enable")
-
         let self = this
         this.createRoomFrame.runAction(cc.sequence(cc.scaleTo(0.1, 0), cc.callFunc(function () {
             self.createRoom.active = false
@@ -174,34 +148,35 @@ cc.Class({
     },
 
     createGanZhouRoom: function () {
-        sendCreateGanZhouRoom()
-    },
-
-    createRunJinRoom: function () {
-        sendCreateRunJinRoom()
-    },
-
-    createDaoZhouRoom: function () {
-        // sendCreateDaoZhouRoom()
-        // sendCreateGanZhouRoom()
-        sendCreateRunJinRoom()
-    },
-
-    showEnterRoom: function () {
-        let self = this
-        this.node.runAction(cc.sequence(cc.delayTime(0.3), cc.callFunc(function () {
-            Notification.emit("disable")
-
-            self.enterRoom.active = true
-            self.enterRoomFrame.runAction(cc.sequence(cc.scaleTo(0.1, 1.1), cc.scaleTo(0.1, 0.9), cc.scaleTo(0.1, 1)))
-
-            self.onKeyPressed(null, "reset")
+        this.loading.getComponent("loading").show()
+        this.node.runAction(cc.sequence(cc.delayTime(0.5), cc.callFunc(function () {
+            sendCreateGanZhouRoom()
         })))
     },
 
-    hideEnterRoom: function () {
-        Notification.emit("enable")
+    createRunJinRoom: function () {
+        this.loading.getComponent("loading").show()
+        this.node.runAction(cc.sequence(cc.delayTime(0.5), cc.callFunc(function () {
+            sendCreateRunJinRoom()
+        })))
+    },
 
+    createDaoZhouRoom: function () {
+        this.loading.getComponent("loading").show()
+        this.node.runAction(cc.sequence(cc.delayTime(0.5), cc.callFunc(function () {
+            // sendCreateDaoZhouRoom()
+            sendCreateRunJinRoom()
+        })))
+    },
+
+    showEnterRoom: function () {
+        this.enterRoom.active = true
+        this.enterRoomFrame.runAction(cc.sequence(cc.scaleTo(0.1, 1.1), cc.scaleTo(0.1, 0.9), cc.scaleTo(0.1, 1)))
+
+        this.onKeyPressed(null, "reset")
+    },
+
+    hideEnterRoom: function () {
         let self = this
         this.enterRoomFrame.runAction(cc.sequence(cc.scaleTo(0.1, 0), cc.callFunc(function () {
             self.enterRoom.active = false
@@ -249,7 +224,7 @@ cc.Class({
             this.loading.getComponent("loading").show()
 
             let self = this
-            this.node.runAction(cc.sequence(cc.delayTime(1), cc.callFunc(function () {
+            this.node.runAction(cc.sequence(cc.delayTime(0.5), cc.callFunc(function () {
                 sendEnterRoom(self.roomNumber.string)
             })))
         }
@@ -257,17 +232,20 @@ cc.Class({
 
     onResult(result) {
         cc.log(result)
-        this.loading.getComponent("loading").hide()
-        this.loading2.getComponent("loading2").hide()
-
         if (result.S2C_Login) {
             cc.log('hall another room: ' + userInfo.anotherRoom)
             if (userInfo.anotherRoom) {
                 sendEnterRoom("")
             } else {
+                this.loading.getComponent("loading").hide()
+                this.loading2.getComponent("loading2").hide()
+
                 this.loadUserInfo()
             }
         } else if (result.S2C_Close) {
+            this.loading.getComponent("loading").hide()
+            this.loading2.getComponent("loading2").hide()
+
             if (result.S2C_Close.Error === 1) { // S2C_Close_LoginRepeated
                 this.dialog.getComponent("dialog").setMessage("您的账号在其他设备上线，非本人操作请注意修改密码").
                     setPositiveButton(function () {
@@ -300,6 +278,11 @@ cc.Class({
                     }).show()
             }
         } else if (result.S2C_CreateRoom) {
+            this.hideCreatRoom()
+            
+            this.loading.getComponent("loading").hide()
+            this.loading2.getComponent("loading2").hide()
+
             if (result.S2C_CreateRoom.Error === 1) { // S2C_CreateRoom_InnerError
                 this.dialog.getComponent("dialog").setMessage("创建房间出错，请联系客服").
                     setPositiveButton(function () {
@@ -314,6 +297,11 @@ cc.Class({
                     }).show()
             }
         } else if (result.S2C_EnterRoom) {
+            if (result.S2C_EnterRoom.Error > 0) {
+                this.loading.getComponent("loading").hide()
+                this.loading2.getComponent("loading2").hide()
+            }
+
             if (result.S2C_EnterRoom.Error === 0) { // S2C_EnterRoom_OK
                 cc.director.loadScene(room)
             } else if (result.S2C_EnterRoom.Error === 1) { // S2C_EnterRoom_NotCreated
@@ -331,7 +319,7 @@ cc.Class({
                 if (roomNumber) {
                     msg = "进入房间：" + roomNumber + " 出错，请稍后重试"
                 }
-                
+
                 this.dialog.getComponent("dialog").setMessage(msg).
                     setPositiveButton(function () {
 

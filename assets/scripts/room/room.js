@@ -49,14 +49,6 @@ cc.Class({
         }, this)
 
         Notification.on("onclose", this.reconnect, this)
-
-        Notification.on("enable", function () {
-            self.setButtonsEnabled(true)
-        })
-
-        Notification.on("disable", function () {
-            self.setButtonsEnabled(false)
-        })
     },
 
     start: function () {
@@ -86,9 +78,6 @@ cc.Class({
         Notification.offType("onmessage")
         Notification.offType("onerror")
         Notification.offType("onclose")
-
-        Notification.offType("enable")
-        Notification.offType("disable")
     },
 
     initializeVariable: function () {
@@ -309,7 +298,7 @@ cc.Class({
             }
         } else if (result.S2C_DisbandRoom) {
             if (result.S2C_DisbandRoom.Error === 0) { // S2C_DisbandRoom_OK
-                let msg = "房间: " + result.S2C_DisbandRoom.RoomNumber + " 已经被房主: " + result.S2C_DisbandRoom.OwnerNickName + "解散"
+                let msg = "房间: " + result.S2C_DisbandRoom.RoomNumber + " 已经被房主" + result.S2C_DisbandRoom.OwnerNickName + "解散"
                 this.dialog.getComponent("dialog").setMessage(msg).
                     setPositiveButton(function () {
                         cc.director.loadScene(hall)

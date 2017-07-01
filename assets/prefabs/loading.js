@@ -31,17 +31,13 @@ cc.Class({
         if (this.node.active) {
             return
         }
-
-        Notification.emit("disable")
-
+        
         this.node.active = true
         this.schedule(this.updateMessage, 0.3, this)
     },
 
     hide: function () {
         if (this.node.active) {
-            Notification.emit("enable")
-
             this.unschedule(this.updateMessage)
             this.node.active = false
         }

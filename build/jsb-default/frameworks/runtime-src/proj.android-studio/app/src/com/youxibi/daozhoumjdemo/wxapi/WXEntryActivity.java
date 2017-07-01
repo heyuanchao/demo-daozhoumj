@@ -67,16 +67,16 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 AppActivity.app.runOnGLThread(new Runnable() {
                     @Override
                     public void run() {
-                        Cocos2dxJavascriptJavaBridge.evalString("cc.find(\"Canvas\").getComponent(\"login\").setWeChatLoginEnabled();");
+                        Cocos2dxJavascriptJavaBridge.evalString("cc.find(\"Canvas\").getComponent(\"login\").hideLoading();");
                     }
                 });
-                Toast.makeText(this, "用户取消", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "用户取消授权", Toast.LENGTH_SHORT).show();
                 break;
             case BaseResp.ErrCode.ERR_AUTH_DENIED:
                 AppActivity.app.runOnGLThread(new Runnable() {
                     @Override
                     public void run() {
-                        Cocos2dxJavascriptJavaBridge.evalString("cc.find(\"Canvas\").getComponent(\"login\").setWeChatLoginEnabled();");
+                        Cocos2dxJavascriptJavaBridge.evalString("cc.find(\"Canvas\").getComponent(\"login\").hideLoading();");
                     }
                 });
                 Toast.makeText(this, "用户拒绝授权", Toast.LENGTH_SHORT).show();
