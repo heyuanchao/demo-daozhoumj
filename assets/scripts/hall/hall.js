@@ -220,7 +220,6 @@ cc.Class({
 
         this.roomNumber.string += customEventData
         if (this.roomNumber.string.length == 6) {
-            this.enterRoom.active = false
             this.loading.getComponent("loading").show()
 
             let self = this
@@ -278,7 +277,7 @@ cc.Class({
                     }).show()
             }
         } else if (result.S2C_CreateRoom) {
-            this.hideCreatRoom()
+            this.createRoom.active = false
             
             this.loading.getComponent("loading").hide()
             this.loading2.getComponent("loading2").hide()
@@ -298,6 +297,8 @@ cc.Class({
             }
         } else if (result.S2C_EnterRoom) {
             if (result.S2C_EnterRoom.Error > 0) {
+                this.enterRoom.active = false
+
                 this.loading.getComponent("loading").hide()
                 this.loading2.getComponent("loading2").hide()
             }
