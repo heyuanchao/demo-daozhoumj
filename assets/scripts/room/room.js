@@ -6,6 +6,7 @@ cc.Class({
         settingPrefab: cc.Prefab,
         loading2Prefab: cc.Prefab,
         roomNumber: cc.Label,
+        roomDesc: cc.Label,
         btnSetUp: cc.Button,
         btnInviteFriend: cc.Button,
         btnDisbandRoom: cc.Button,
@@ -16,11 +17,11 @@ cc.Class({
     onLoad: function () {
         this.initializeVariable()
 
-        this.setting = cc.instantiate(this.settingPrefab)
-        this.node.addChild(this.setting)
-
         this.dialog = cc.instantiate(this.dialogPrefab)
         this.node.addChild(this.dialog)
+
+        this.setting = cc.instantiate(this.settingPrefab)
+        this.node.addChild(this.setting)
 
         this.loading2 = cc.instantiate(this.loading2Prefab)
         this.node.addChild(this.loading2)
@@ -58,6 +59,10 @@ cc.Class({
                 this.roomNumber.string += roomInfo.number
             }
 
+            if (roomInfo.desc) {
+                this.roomDesc.string = roomInfo.desc
+            }
+
             if (userInfo.anotherLogin) {
                 userInfo.anotherLogin = false
                 this.dialog.getComponent("dialog").setMessage("您的账号刚在其他设备上线，请您检查账号安全").show()
@@ -67,7 +72,7 @@ cc.Class({
             this.user2.active = false
             this.user3.active = false
             this.user4.active = false
-            sendGetPlayerInfo()
+            sendGetAllPlayers()
         } else {
             this.reconnect()
         }
@@ -110,13 +115,6 @@ cc.Class({
         this.user2Ready = cc.find("Canvas/bg/user2/ready_tag")
         this.user3Ready = cc.find("Canvas/bg/user3/ready_tag")
         this.user4Ready = cc.find("Canvas/bg/user4/ready_tag")
-    },
-
-    setButtonsEnabled: function (enabled) {
-        this.btnSetUp.enabled = enabled
-        this.btnInviteFriend.enabled = enabled
-        this.btnDisbandRoom.enabled = enabled
-        this.btnExitRoom.enabled = enabled
     },
 
     reconnect: function () {
@@ -248,8 +246,8 @@ cc.Class({
             } else if (pos == (userInfo.position + 3) % roomInfo.maxPlayers) {
                 this.user4.active = false
             }
-        } else if (result.S2C_GetPlayerInfo) {
-            let obj = result.S2C_GetPlayerInfo
+        } else if (result.S2C_SitDown) {
+            let obj = result.S2C_SitDown
 
             let pos = obj.Position
             let owner = obj.Owner
@@ -257,7 +255,7 @@ cc.Class({
             let nickname = obj.Nickname
             let headimgurl = obj.Headimgurl
             let sex = obj.Sex
-            let ready = obj.UserReady
+            let ready = obj.Ready
 
             cc.log('加入, 位置:', pos, owner, accountID, nickname, sex, ready)
 
@@ -274,6 +272,9 @@ cc.Class({
 
                 this.user1Owner.active = owner
                 this.user1Ready.active = ready
+                if (!ready) {
+                    sendPrepare()
+                }
             } else if (pos == (userInfo.position + 1) % roomInfo.maxPlayers) {
                 setUserInfo(user2Info, obj)
                 this.user2.active = true
@@ -296,6 +297,19 @@ cc.Class({
                 this.user4Owner.active = owner
                 this.user4Ready.active = ready
             }
+        } else if (result.S2C_StandUp) {
+            let obj = result.S2C_StandUp
+
+            let pos = obj.Position
+            if (pos == userInfo.position) {
+                cc.director.loadScene(hall)
+            } else if (pos == (userInfo.position + 1) % roomInfo.maxPlayers) {
+                this.user2.active = false
+            } else if (pos == (userInfo.position + 2) % roomInfo.maxPlayers) {
+                this.user3.active = false
+            } else if (pos == (userInfo.position + 3) % roomInfo.maxPlayers) {
+                this.user4.active = false
+            }
         } else if (result.S2C_DisbandRoom) {
             if (result.S2C_DisbandRoom.Error === 0) { // S2C_DisbandRoom_OK
                 let msg = "房间: " + result.S2C_DisbandRoom.RoomNumber + " 已经被房主" + result.S2C_DisbandRoom.OwnerNickName + "解散"
@@ -303,6 +317,20 @@ cc.Class({
                     setPositiveButton(function () {
                         cc.director.loadScene(hall)
                     }).show()
+            }
+        } else if (result.S2C_Prepare) {
+            let obj = result.S2C_Prepare
+
+            let pos = obj.Position
+            let ready = obj.Ready
+            if (pos == userInfo.position) {
+                this.user1Ready.active = ready
+            } else if (pos == (userInfo.position + 1) % roomInfo.maxPlayers) {
+                this.user2Ready.active = ready
+            } else if (pos == (userInfo.position + 2) % roomInfo.maxPlayers) {
+                this.user3Ready.active = ready
+            } else if (pos == (userInfo.position + 3) % roomInfo.maxPlayers) {
+                this.user4Ready.active = ready
             }
         }
     },

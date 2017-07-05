@@ -8,8 +8,6 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
-        this.btnWeChatLogin = cc.find("Canvas/bg/btn_wechat_login").getComponent(cc.Button)
-
         this.dialog = cc.instantiate(this.dialogPrefab)
         this.node.addChild(this.dialog)
 
@@ -81,9 +79,6 @@ cc.Class({
 
         let self = this
         this.node.runAction(cc.sequence(cc.delayTime(1), cc.callFunc(function () {
-            // self.node.stopAllActions()
-            // self.btnWeChatLogin.enabled = false
-
             if (cc.sys.isMobile) {
                 // cc.find('Bgm').getComponent('bgm').pause();
                 if (cc.sys.os == cc.sys.OS_ANDROID) {

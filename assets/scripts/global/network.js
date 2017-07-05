@@ -110,10 +110,14 @@ window.sendCreateGanZhouRoom = function () {
     })
 }
 
-window.sendCreateRunJinRoom = function () {
+window.sendCreateRuiJinRoom = function () {
     sendJsonObject({
         C2S_CreateRuiJinRoom: {
-
+            jushu: ruijinRule.jushu,
+            renshu: ruijinRule.renshu,
+            mustzimo: ruijinRule.mustzimo,
+            difen: ruijinRule.difen,
+            fenzhuangxian: ruijinRule.fenzhuangxian,
         }
     })
 }
@@ -130,10 +134,14 @@ window.sendEnterRoom = function (number) {
     sendJsonObject({ C2S_EnterRoom: { roomNumber: number } })
 }
 
-window.sendGetPlayerInfo = function () {
-    sendJsonObject({ C2S_GetPlayerInfo: {} })
+window.sendGetAllPlayers = function () {
+    sendJsonObject({ C2S_GetAllPlayers: {} })
 }
 
 window.sendExitOrDisbandRoom = function () {
     sendJsonObject({ C2S_ExitOrDisbandRoom: {} })
+}
+
+window.sendPrepare = function () {
+    sendJsonObject({ C2S_Prepare: {} })
 }

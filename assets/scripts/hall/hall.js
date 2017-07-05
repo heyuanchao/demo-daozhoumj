@@ -17,11 +17,11 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
-        this.setting = cc.instantiate(this.settingPrefab)
-        this.node.addChild(this.setting)
-
         this.dialog = cc.instantiate(this.dialogPrefab)
         this.node.addChild(this.dialog)
+
+        this.setting = cc.instantiate(this.settingPrefab)
+        this.node.addChild(this.setting)
 
         this.loading = cc.instantiate(this.loadingPrefab)
         this.node.addChild(this.loading)
@@ -154,10 +154,10 @@ cc.Class({
         })))
     },
 
-    createRunJinRoom: function () {
+    createRuiJinRoom: function () {
         this.loading.getComponent("loading").show()
         this.node.runAction(cc.sequence(cc.delayTime(0.5), cc.callFunc(function () {
-            sendCreateRunJinRoom()
+            sendCreateRuiJinRoom()
         })))
     },
 
@@ -165,7 +165,7 @@ cc.Class({
         this.loading.getComponent("loading").show()
         this.node.runAction(cc.sequence(cc.delayTime(0.5), cc.callFunc(function () {
             // sendCreateDaoZhouRoom()
-            sendCreateRunJinRoom()
+            sendCreateRuiJinRoom()
         })))
     },
 

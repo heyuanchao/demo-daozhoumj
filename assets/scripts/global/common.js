@@ -22,3 +22,11 @@ window.setUserInfo = function (info, obj) {
     info.sex = obj.Sex
     info.ip = obj.Ip
 }
+
+window.ruijinRule = {
+    jushu: 4,
+    renshu: 4,
+    mustzimo: false,
+    difen: 1,
+    fenzhuangxian: false,
+}
