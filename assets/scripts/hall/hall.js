@@ -17,11 +17,11 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
-        this.dialog = cc.instantiate(this.dialogPrefab)
-        this.node.addChild(this.dialog)
-
         this.setting = cc.instantiate(this.settingPrefab)
         this.node.addChild(this.setting)
+
+        this.dialog = cc.instantiate(this.dialogPrefab)
+        this.node.addChild(this.dialog)
 
         this.loading = cc.instantiate(this.loadingPrefab)
         this.node.addChild(this.loading)
