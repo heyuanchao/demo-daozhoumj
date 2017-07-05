@@ -80,7 +80,15 @@ cc.Class({
                 this.dialog.getComponent("dialog").setMessage("您的账号刚在其他设备上线，请您检查账号安全").show()
             }
         } else {
-            this.reconnect()
+            let token = cc.sys.localStorage.getItem("token")
+            if (token) {
+                this.reconnect()
+            } else {
+                this.dialog.getComponent("dialog").setMessage("登录态失效，请您重新登录").
+                    setPositiveButton(function () {
+                        cc.director.loadScene(login)
+                    }).show()
+            }
         }
     },
 
