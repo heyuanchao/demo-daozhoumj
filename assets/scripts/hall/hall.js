@@ -62,6 +62,11 @@ cc.Class({
         }, this)
 
         Notification.on("onclose", this.reconnect, this)
+
+        Notification.on("onshow", function () {
+            this.loading.getComponent("loading").hide()
+            this.loading2.getComponent("loading2").hide()
+        }, this)
         cc.log("hall onLoad")
     },
 
@@ -84,6 +89,8 @@ cc.Class({
         Notification.offType("onmessage")
         Notification.offType("onerror")
         Notification.offType("onclose")
+
+        Notification.offType("onshow")
     },
 
     reconnect: function () {
@@ -236,14 +243,14 @@ cc.Class({
             if (userInfo.anotherRoom) {
                 sendEnterRoom("")
             } else {
-                this.loading.getComponent("loading").hide()
+                // this.loading.getComponent("loading").hide()
                 this.loading2.getComponent("loading2").hide()
 
                 this.loadUserInfo()
             }
         } else if (result.S2C_Close) {
-            this.loading.getComponent("loading").hide()
-            this.loading2.getComponent("loading2").hide()
+            // this.loading.getComponent("loading").hide()
+            // this.loading2.getComponent("loading2").hide()
 
             if (result.S2C_Close.Error === 1) { // S2C_Close_LoginRepeated
                 this.dialog.getComponent("dialog").setMessage("您的账号在其他设备上线，非本人操作请注意修改密码").
@@ -279,8 +286,8 @@ cc.Class({
         } else if (result.S2C_CreateRoom) {
             this.createRoom.active = false
             
-            this.loading.getComponent("loading").hide()
-            this.loading2.getComponent("loading2").hide()
+            // this.loading.getComponent("loading").hide()
+            // this.loading2.getComponent("loading2").hide()
 
             if (result.S2C_CreateRoom.Error === 1) { // S2C_CreateRoom_InnerError
                 this.dialog.getComponent("dialog").setMessage("创建房间出错，请联系客服").
@@ -296,12 +303,12 @@ cc.Class({
                     }).show()
             }
         } else if (result.S2C_EnterRoom) {
-            if (result.S2C_EnterRoom.Error > 0) {
-                this.enterRoom.active = false
+            // if (result.S2C_EnterRoom.Error > 0) {
+            //     this.enterRoom.active = false
 
-                this.loading.getComponent("loading").hide()
-                this.loading2.getComponent("loading2").hide()
-            }
+            //     this.loading.getComponent("loading").hide()
+            //     this.loading2.getComponent("loading2").hide()
+            // }
 
             if (result.S2C_EnterRoom.Error === 0) { // S2C_EnterRoom_OK
                 cc.director.loadScene(room)

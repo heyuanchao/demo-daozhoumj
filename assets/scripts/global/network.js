@@ -32,7 +32,6 @@ window.initWebSocket = function () {
             userInfo.anotherRoom = obj.AnotherRoom
 
             cc.sys.localStorage.setItem("token", obj.Token)
-            cc.sys.localStorage.setItem("username", obj.Username)
         } else if (result.S2C_EnterRoom) {
             let obj = result.S2C_EnterRoom
             if (obj.Error === 0) { // S2C_EnterRoom_OK
@@ -96,7 +95,6 @@ window.sendWeChatLogin = function () {
 window.sendTokenLogin = function () {
     sendJsonObject({
         C2S_TokenLogin: {
-            username: cc.sys.localStorage.getItem("username"),
             token: cc.sys.localStorage.getItem("token"),
         }
     })

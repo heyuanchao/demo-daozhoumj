@@ -75,6 +75,8 @@ cc.Class({
     },
 
     show: function () {
+        Notification.emit("onshow")
+
         if (this.node.active) {
             return
         }

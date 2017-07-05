@@ -34,9 +34,9 @@ cc.Class({
 
         let self = this
         Notification.on("onerror", function () {
-            self.loading2.getComponent("loading2").hide()
+            // this.loading2.getComponent("loading2").hide()
 
-            self.dialog.getComponent("dialog").setMessage("无法连接服务器，是否继续尝试重连?")
+            this.dialog.getComponent("dialog").setMessage("无法连接服务器，是否继续尝试重连?")
                 .setPositiveButton(function () {
                     self.loading2.getComponent("loading2").show()
                     // 延时0.2秒等待缩放动画完成
@@ -50,6 +50,10 @@ cc.Class({
         }, this)
 
         Notification.on("onclose", this.reconnect, this)
+
+        Notification.on("onshow", function () {
+            this.loading2.getComponent("loading2").hide()
+        }, this)
     },
 
     start: function () {
@@ -74,7 +78,15 @@ cc.Class({
             this.user4.active = false
             sendGetAllPlayers()
         } else {
-            this.reconnect()
+            let token = cc.sys.localStorage.getItem("token")
+            if (token) {
+                this.reconnect()
+            } else {
+                this.dialog.getComponent("dialog").setMessage("登录态失效，请您重新登录").
+                    setPositiveButton(function () {
+                        cc.director.loadScene(login)
+                    }).show()
+            }
         }
     },
 
@@ -83,6 +95,8 @@ cc.Class({
         Notification.offType("onmessage")
         Notification.offType("onerror")
         Notification.offType("onclose")
+
+        Notification.offType("onshow")
     },
 
     initializeVariable: function () {
@@ -171,7 +185,7 @@ cc.Class({
 
     onResult(result) {
         cc.log(result)
-        this.loading2.getComponent("loading2").hide()
+        // this.loading2.getComponent("loading2").hide()
 
         if (result.S2C_Login) {
             cc.log('room another room: ' + userInfo.anotherRoom)

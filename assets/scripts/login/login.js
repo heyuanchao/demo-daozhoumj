@@ -14,7 +14,6 @@ cc.Class({
         this.loading = cc.instantiate(this.loadingPrefab)
         this.node.addChild(this.loading)
 
-        let self = this
         Notification.on("onopen", function () {
             let token = cc.sys.localStorage.getItem("token")
             if (token) {
@@ -31,8 +30,12 @@ cc.Class({
         Notification.on("onmessage", this.onResult, this)
 
         Notification.on("onerror", function () {
-            self.loading.getComponent("loading").hide()
-            self.dialog.getComponent("dialog").setMessage("登录失败，请稍后重试").setPositiveButton(null).show()
+            this.loading.getComponent("loading").hide()
+            this.dialog.getComponent("dialog").setMessage("登录失败，请稍后重试").setPositiveButton(null).show()
+        }, this)
+
+        Notification.on("onshow", function () {
+            this.loading.getComponent("loading").hide()
         }, this)
         cc.log("login onLoad")
     },
@@ -50,6 +53,8 @@ cc.Class({
         Notification.offType("onopen")
         Notification.offType("onmessage")
         Notification.offType("onerror")
+
+        Notification.offType("onshow")
     },
 
     playOkEffect: function () {
@@ -167,7 +172,7 @@ cc.Class({
                 cc.director.loadScene(hall)
             }
         } else if (result.S2C_Close) {
-            this.loading.getComponent("loading").hide()
+            // this.loading.getComponent("loading").hide()
 
             if (result.S2C_Close.Error === 1) { // S2C_Close_LoginRepeated
                 //this.launch_dialog.getComponent('launch_dialog').show('您的账号在其他设备上线，非本人操作请注意修改密码')
@@ -183,9 +188,9 @@ cc.Class({
                 this.dialog.getComponent("dialog").setMessage("登录态失效，用户名无效").show()
             }
         } else if (result.S2C_EnterRoom) {
-            if (result.S2C_EnterRoom.Error > 0) {
-                this.loading.getComponent("loading").hide()
-            }
+            // if (result.S2C_EnterRoom.Error > 0) {
+            //     this.loading.getComponent("loading").hide()
+            // }
 
             if (result.S2C_EnterRoom.Error === 0) { // S2C_EnterRoom_OK
                 cc.director.loadScene(room)
