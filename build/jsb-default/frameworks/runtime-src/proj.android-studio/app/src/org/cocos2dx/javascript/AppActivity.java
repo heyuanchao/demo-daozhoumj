@@ -49,6 +49,8 @@ public class AppActivity extends Cocos2dxActivity {
 
     private static IWXAPI api;
 
+    public static String code = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

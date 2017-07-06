@@ -53,7 +53,14 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 if (resp instanceof SendAuth.Resp) {
                     final String code = ((SendAuth.Resp) resp).code;
                     final String state = ((SendAuth.Resp) resp).state;
-                    // Log.i(TAG, "code: " + code);
+
+                    // 微信会回调两次相同的 code，具体原因待查
+                    if (AppActivity.code.equals(code))  {
+                        Log.i(TAG, "code 重复");
+                        return;
+                    }
+                    Log.i(TAG, "code: " + code);
+                    AppActivity.code = code;
                     final String result = code + "," + state + "," + android.os.Build.SERIAL + "," + android.os.Build.MODEL;
                     AppActivity.app.runOnGLThread(new Runnable() {
                         @Override
